@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Admin, Resource, Layout, AppBar, UserMenu } from 'react-admin';
+import { Admin, CustomRoutes, Resource, Layout, AppBar, UserMenu } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
+import { Route } from 'react-router-dom';
 import { List, Edit, Create, SimpleForm, TextInput, BooleanInput, Datagrid, TextField, PasswordInput, BooleanField } from 'react-admin';
 import LogoutButton from './LogoutButton';
 import LoginPage from './LoginPage';
@@ -69,6 +70,9 @@ const AdminApp = () => {
                 edit={AdminUserEdit}
                 create={AdminUserCreate}
             />
+            {/*<CustomRoutes>*/}
+            {/*    <Route path="/admin-users" element={<AdminUserList />} />*/}
+            {/*</CustomRoutes>*/}
         </Admin>
     ) : (
         <LoginPage onLogin={handleLogin} />
