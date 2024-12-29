@@ -4,6 +4,7 @@ import jsonServerProvider from 'ra-data-json-server';
 import { List, Edit, Create, SimpleForm, TextInput, BooleanInput, Datagrid, TextField, PasswordInput, BooleanField } from 'react-admin';
 import LogoutButton from './LogoutButton';
 import LoginPage from './LoginPage';
+import Sidebar from './components/Sidebar';
 
 const dataProvider = jsonServerProvider('http://localhost:5001');
 
@@ -15,7 +16,7 @@ const CustomUserMenu = (props) => (
 
 const CustomAppBar = (props) => <AppBar {...props} userMenu={<CustomUserMenu />} />;
 
-const CustomLayout = (props) => <Layout {...props} appBar={CustomAppBar} />;
+const CustomLayout = (props) => <Layout {...props} appBar={CustomAppBar} menu={Sidebar} />;
 
 const AdminUserList = (props) => (
     <List {...props}>
@@ -60,16 +61,8 @@ const AdminApp = () => {
         setIsAuthenticated(true);
     };
 
-    const handleLogout = () => {
-        setIsAuthenticated(false);
-        localStorage.removeItem('authToken');
-    };
-
     return isAuthenticated ? (
-        <Admin
-            dataProvider={dataProvider}
-            layout={CustomLayout} // Подключаем кастомный layout
-        >
+        <Admin dataProvider={dataProvider} layout={CustomLayout} menu={Sidebar}>
             <Resource
                 name="admin-users"
                 list={AdminUserList}
