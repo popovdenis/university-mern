@@ -7,12 +7,7 @@ import { AdminUser } from './admin-users.schema';
 export class AdminUsersService {
     constructor(@InjectModel(AdminUser.name) private readonly adminUserModel: Model<AdminUser>) {}
 
-    async create(createAdminUserDto: {
-        firstname: string;
-        lastname: string;
-        email: string;
-        password: string
-    }): Promise<AdminUser> {
+    async create(createAdminUserDto: any): Promise<AdminUser> {
         const newAdminUser = new this.adminUserModel(createAdminUserDto);
         return newAdminUser.save();
     }
