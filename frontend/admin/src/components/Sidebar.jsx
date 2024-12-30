@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, Typography, IconButton, useTheme, Tooltip } from "@mui/material";
-import { tokens } from "../../../theme";
+import { tokens } from "../theme";
 import {
    PeopleTwoTone,
    PeopleOutlined,

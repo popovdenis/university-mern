@@ -2,8 +2,8 @@ import "./App.css";
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-import Topbar from "./scenes/dashboard/gloabal/Topbar";
-import Sidebar from "./scenes/dashboard/gloabal/Sidebar";
+import Topbar from "./components/Topbar";
+import Sidebar from "./components/Sidebar"
 import Dashboard from "./scenes/dashboard";
 import Users from "./pages/users/Users";
 import UserEdit from "./pages/users/UserEdit";
