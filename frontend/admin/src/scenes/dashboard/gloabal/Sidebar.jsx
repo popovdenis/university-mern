@@ -1,197 +1,174 @@
-import React from "react";
-import {Sidebar as MySidebar, Menu, MenuItem} from "react-pro-sidebar";
-import {Box, IconButton, Typography, useTheme} from "@mui/material";
-import {tokens} from "../../../theme";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useState } from "react";
+import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Box, Typography, IconButton, useTheme, Tooltip } from "@mui/material";
+import { tokens } from "../../../theme";
+import {
+   PeopleOutlined,
+   ReceiptOutlined,
+   PersonOutlined,
+   BarChartOutlined,
+   PieChartOutlineOutlined,
+   TimelineOutlined,
+   MenuOutlined,
+} from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
-const Item = ({title, to, icon, selected, setSelected}) => {
+const SidebarItem = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
 
    return (
-       <MenuItem
-           active={selected === title}
-           style={{
-              color: colors.grey[100],
-           }}
-           onClick={() => setSelected(title)}
-           icon={icon}
-           component={<Link to={to}/>} // Используем Link только здесь
-       >
-          <Typography>{title}</Typography>
-       </MenuItem>
+       <Tooltip title={isCollapsed ? title : ""} placement="right">
+          <MenuItem
+              active={selected === title}
+              style={{
+                 color: colors.grey[100],
+              }}
+              onClick={() => setSelected(title)}
+              icon={icon}
+              component={<Link to={to} />}
+          >
+             {!isCollapsed && <Typography>{title}</Typography>}
+          </MenuItem>
+       </Tooltip>
    );
 };
 
-function Sidebar() {
+const Sidebar = () => {
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
    const [isCollapsed, setCollapsed] = useState(false);
-   const [selected, setSelected] = useState("dashboard");
+   const [selected, setSelected] = useState("Dashboard");
 
    return (
-       <div className="sidebar">
-          <Box
-              sx={{
-                 "& .pro-sidebar": {
-                    backgroundColor: "black !important",
-                 },
-                 "& .pro-sidebar-inner": {
-                    backgroundColor: `${colors.primary[400]} !important`,
-                 },
-                 "& .pro-icon-wrapper": {
-                    backgroundColor: "transparent !important",
-                 },
-                 "& .pro-inner-item": {
-                    // padding: "5px 35px 5px 20px !important",
-                 },
-                 "& .pro-inner-item:hover": {
-                    // color: `${colors.grey[700]} !important`,
-                 },
-                 "& .pro-menu-item.active": {
-                    color: "#6870fa !important",
-                 },
-                 "& .ps-menuitem-root:hover": {
-                    color: "yellow !important",
-                 },
-              }}
-          >
-             <MySidebar
-                 collapsed={isCollapsed}
-                 backgroundColor={colors.primary[400]}
-                 height="100vh"
-             >
-                <Menu
-                    iconShape="square"
-                    menuItemStyles={{
-                       button: {
-                          [`&:hover`]: {
-                             backgroundColor: colors.blueAccent[300],
-                          },
-                          [`&.active`]: {
-                             backgroundColor: "#fff",
-                             color: "#b6c8d9",
-                          },
-                       },
+       <Box
+           sx={{
+              "& .pro-sidebar": {
+                 backgroundColor: colors.primary[400], // Обновленный фон
+              },
+              "& .pro-menu-item": {
+                 color: colors.grey[100], // Темный текст для светлой темы
+              },
+              "& .pro-menu-item.active": {
+                 color: colors.blueAccent[500], // Активный элемент
+                 backgroundColor: colors.primary[200], // Мягкий фон для активного
+              },
+              "& .pro-menu-item:hover": {
+                 color: colors.primary[900], // Контрастный текст при наведении
+              },
+           }}
+       >
+          <ProSidebar collapsed={isCollapsed}>
+             <Menu>
+                {/* Toggle Button */}
+                <MenuItem
+                    onClick={() => setCollapsed(!isCollapsed)}
+                    icon={isCollapsed ? <MenuOutlined /> : undefined}
+                    style={{
+                       margin: "10px 0 20px 0",
+                       color: colors.grey[300],
                     }}
                 >
-                   <MenuItem
-                       onClick={() => setCollapsed(!isCollapsed)}
-                       icon={isCollapsed ? <MenuOutlinedIcon/> : undefined}
-                       style={{
-                          margin: "10px 0px 20px 0px",
-                          color: colors.grey[700],
-                       }}
-                   >
-                      {!isCollapsed && (
-                          <Box
-                              display="flex"
-                              justifyContent="space-between"
-                              alignItems="center"
-                              ml="15px"
-                          >
-                             <Typography variant="h3" color={colors.grey[100]}>
-                                Admin Panel
-                             </Typography>
-                             <IconButton onClick={() => setCollapsed(!isCollapsed)}>
-                                <MenuOutlinedIcon/>
-                             </IconButton>
-                          </Box>
-                      )}
-                   </MenuItem>
                    {!isCollapsed && (
-                       <Box mb="25px">
-                          <Box textAlign="center">
-                             <Typography
-                                 variant="h3"
-                                 color={colors.grey[100]}
-                                 fontWeight="bold"
-                                 sx={{m: "10px 0 0 0"}}
-                             >
-                                Denis Popov
-                             </Typography>
-                             <Typography
-                                 variant="h5"
-                                 fontWeight="400"
-                                 color={colors.greenAccent[500]}
-                             >
-                                Admin
-                             </Typography>
-                          </Box>
+                       <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
+                          <Typography variant="h4" color={colors.grey[100]}>
+                             Admin Panel
+                          </Typography>
+                          <IconButton onClick={() => setCollapsed(!isCollapsed)}>
+                             <MenuOutlined />
+                          </IconButton>
                        </Box>
                    )}
-                   <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-                      <Item
-                          title="Dashboard"
-                          to="/"
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                      <Typography variant="h6" color={colors.grey[300]} sx={{m: "15px 0px 5px 20px"}}>
-                         Customers
-                      </Typography>
-                      <Item
-                          title="All Customers"
-                          to="/contact"
-                          icon={<PersonOutlinedIcon/>}
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                      <Item
-                          title="Invoices Balances"
-                          to="/invoices"
-                          icon={<ReceiptOutlinedIcon/>}
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                      <Typography variant="h6" color={colors.grey[300]} sx={{m: "15px 0px 5px 20px"}}>
-                         Graphs
-                      </Typography>
-                      <Item
-                          title="Bar Chart"
-                          to="/bar"
-                          icon={<BarChartOutlinedIcon/>}
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                      <Item
-                          title="Pie Chart"
-                          to="/pie"
-                          icon={<PieChartOutlineOutlinedIcon/>}
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                      <Item
-                          title="Line Chart"
-                          to="/line"
-                          icon={<TimelineOutlinedIcon/>}
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                      <Typography variant="h6" color={colors.grey[300]} sx={{m: "15px 0px 5px 20px"}}>
-                         System
-                      </Typography>
-                      <Item
-                          title="All Users"
-                          to="/users"
-                          icon={<PeopleOutlinedIcon/>}
-                          selected={selected}
-                          setSelected={setSelected}
-                      />
-                   </Box>
-                </Menu>
-             </MySidebar>
-          </Box>
-       </div>
+                </MenuItem>
+
+                {/* User Info */}
+                {!isCollapsed && (
+                    <Box mb="25px" textAlign="center">
+                       <Typography variant="h5" color={colors.grey[100]} fontWeight="bold">
+                          Denis Popov
+                       </Typography>
+                       <Typography
+                           variant="h5"
+                           fontWeight="500"
+                           color={colors.greenAccent[700]}
+                       >
+                          Admin
+                       </Typography>
+                    </Box>
+                )}
+
+                {/* Menu Items */}
+                <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+                   <SidebarItem
+                       title="Dashboard"
+                       to="/"
+                       icon={<TimelineOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                   <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
+                      Customers
+                   </Typography>
+                   <SidebarItem
+                       title="All Customers"
+                       to="/contact"
+                       icon={<PersonOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                   <SidebarItem
+                       title="Invoices"
+                       to="/invoices"
+                       icon={<ReceiptOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                   <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
+                      Graphs
+                   </Typography>
+                   <SidebarItem
+                       title="Bar Chart"
+                       to="/bar"
+                       icon={<BarChartOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                   <SidebarItem
+                       title="Pie Chart"
+                       to="/pie"
+                       icon={<PieChartOutlineOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                   <SidebarItem
+                       title="Line Chart"
+                       to="/line"
+                       icon={<TimelineOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                   <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
+                      System
+                   </Typography>
+                   <SidebarItem
+                       title="All Users"
+                       to="/users"
+                       icon={<PeopleOutlined />}
+                       selected={selected}
+                       setSelected={setSelected}
+                       isCollapsed={isCollapsed}
+                   />
+                </Box>
+             </Menu>
+          </ProSidebar>
+       </Box>
    );
-}
+};
 
 export default Sidebar;
