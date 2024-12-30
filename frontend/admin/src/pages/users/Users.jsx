@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {Box, useTheme, Typography} from "@mui/material";
+import {Box, useTheme, Typography, Button} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import {DataGrid} from "@mui/x-data-grid";
-import {tokens} from "../theme";
+import {tokens} from "../../theme";
 import {AdminPanelSettingsOutlined} from "@mui/icons-material";
 import {LockOpenOutlined} from "@mui/icons-material";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import axios from "axios";
 
 function Users() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const navigate = useNavigate();
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -90,7 +92,20 @@ function Users() {
                     </Box>
                 )
             }
-        }
+        },
+        {
+            field: "actions",
+            headerName: "Actions",
+            renderCell: ({ row }) => (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate(`/users/edit/${row.id}`)}
+                >
+                    Edit
+                </Button>
+            ),
+        },
     ];
 
     return (

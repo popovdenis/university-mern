@@ -5,7 +5,8 @@ import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/dashboard/gloabal/Topbar";
 import Sidebar from "./scenes/dashboard/gloabal/Sidebar";
 import Dashboard from "./scenes/dashboard";
-import Users from "./scenes/Users";
+import Users from "./pages/users/Users";
+import UserEdit from "./pages/users/UserEdit";
 import Invoices from "./scenes/Invoices";
 import Contact from "./scenes/Constact";
 import Bar from "./scenes/Bar";
@@ -27,6 +28,7 @@ const [theme, colorMode] = useMode();
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/users" element={<Users />} />
+                <Route path="/users/edit/:id" element={<UserEdit />} />
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/faq" element={<Faq />} />
