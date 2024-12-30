@@ -145,6 +145,7 @@ function Users() {
                     rows={data}
                     columns={columns}
                     loading={loading}
+                    paginationMode="server"
                     paginationModel={paginationModel}
                     onPaginationModelChange={handlePaginationChange}
                     rowCount={rowCount}
