@@ -59,3 +59,22 @@ body,
 .transaction-container::-webkit-scrollbar-track {
     background: #e0e0e0 !important;
 }
+.save-button {
+    background-color: #eb5202 !important;
+    border-color: #eb5202 !important;
+    color: #ffffff !important;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.25);
+    font-weight: bold !important;
+}
+.save-button:hover {
+    background-color: #7e7e7e;
+    opacity: 0.8;
+}
+.cancel-button {
+    background-color: #9e9e9e;
+    color: white;
+    text-transform: none;
+}
+.cancel-button:hover {
+    background-color: #7e7e7e;
+}

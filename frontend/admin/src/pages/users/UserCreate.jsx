@@ -1,48 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Box, Button, TextField, Switch, FormControlLabel, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { tokens } from "../../theme";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import {Box, TextField, Button, Typography, FormControlLabel, Switch} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {tokens} from "../../theme";
+import {useTheme} from "@mui/material/styles";
 
-const UserEdit = () => {
-   const { id } = useParams();
+function CreateUser() {
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-
-   const [user, setUser] = useState({
+   const [errors, setErrors] = useState({});
+   const [loading, setLoading] = useState(false);
+   const [formData, setFormData] = useState({
       firstname: "",
       lastname: "",
       email: "",
       password: "",
-      confirmPassword: "",
       isActive: true,
    });
 
-   const [errors, setErrors] = useState({});
-   const [loading, setLoading] = useState(false);
-
-   useEffect(() => {
-      const fetchUser = async () => {
-         try {
-            const response = await axios.get(`http://localhost:5001/admin-users/${id}`);
-            setUser({
-               ...response.data,
-               password: "",
-               confirmPassword: "",
-            });
-         } catch (error) {
-            console.error("Error fetching user data:", error);
-         }
-      };
-
-      fetchUser();
-   }, [id]);
-
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
-      setUser((prevUser) => ({
+      setFormData((prevUser) => ({
          ...prevUser,
          [name]: type === "checkbox" ? checked : value,
       }));
@@ -50,13 +29,21 @@ const UserEdit = () => {
 
    const validate = () => {
       const newErrors = {};
-      if (!user.firstname.trim()) newErrors.firstname = "Firstname is required";
-      if (!user.lastname.trim()) newErrors.lastname = "Lastname is required";
-      if (!user.email.trim()) newErrors.email = "Email is required";
-      if (user.password !== user.confirmPassword)
+      if (!formData.firstname.trim()) {
+         newErrors.firstname = "Firstname is required";
+      }
+      if (!formData.lastname.trim()) {
+         newErrors.lastname = "Lastname is required";
+      }
+      if (!formData.email.trim()) {
+         newErrors.email = "Email is required";
+      }
+      if (formData.password !== formData.confirmPassword) {
          newErrors.confirmPassword = "Passwords do not match";
+      }
 
       setErrors(newErrors);
+
       return Object.keys(newErrors).length === 0;
    };
 
@@ -67,25 +54,25 @@ const UserEdit = () => {
 
       setLoading(true);
       try {
-         await axios.put(`http://localhost:5001/admin-users/${id}`, {
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            isActive: user.isActive,
-            password: user.password || undefined,
+         await axios.post("http://localhost:5001/admin-users", {
+            firstname: formData.firstname,
+            lastname: formData.lastname,
+            email: formData.email,
+            isActive: formData.isActive,
+            password: formData.password || undefined,
          });
          navigate("/users");
       } catch (error) {
-         console.error("Error updating user:", error);
+         console.log("Error while adding user:", error);
       } finally {
          setLoading(false);
       }
    };
 
    return (
-       <Box m="1.5rem">
+       <Box m="2rem">
           <Typography variant="h4" color={colors.grey[100]} gutterBottom>
-             Edit User
+             Create New User
           </Typography>
           <form onSubmit={handleSubmit}>
              <Box display="grid" gap="1.5rem" gridTemplateColumns="1fr 1fr">
@@ -94,7 +81,7 @@ const UserEdit = () => {
                        fullWidth
                        label="Firstname *"
                        name="firstname"
-                       value={user.firstname}
+                       value={formData.firstname}
                        onChange={handleChange}
                        error={!!errors.firstname}
                        helperText={errors.firstname}
@@ -105,7 +92,7 @@ const UserEdit = () => {
                        fullWidth
                        label="Lastname *"
                        name="lastname"
-                       value={user.lastname}
+                       value={formData.lastname}
                        onChange={handleChange}
                        error={!!errors.lastname}
                        helperText={errors.lastname}
@@ -116,7 +103,7 @@ const UserEdit = () => {
                        fullWidth
                        label="Email *"
                        name="email"
-                       value={user.email}
+                       value={formData.email}
                        onChange={handleChange}
                        error={!!errors.email}
                        helperText={errors.email}
@@ -128,7 +115,7 @@ const UserEdit = () => {
                        label="Password"
                        name="password"
                        type="password"
-                       value={user.password}
+                       value={formData.password}
                        onChange={handleChange}
                        error={!!errors.password}
                        helperText={errors.password}
@@ -140,7 +127,7 @@ const UserEdit = () => {
                        label="Confirm Password"
                        name="confirmPassword"
                        type="password"
-                       value={user.confirmPassword}
+                       value={formData.confirmPassword}
                        onChange={handleChange}
                        error={!!errors.confirmPassword}
                        helperText={errors.confirmPassword}
@@ -151,7 +138,7 @@ const UserEdit = () => {
                        control={
                           <Switch
                               name="isActive"
-                              checked={user.isActive}
+                              checked={formData.isActive}
                               onChange={handleChange}
                           />
                        }
@@ -175,6 +162,6 @@ const UserEdit = () => {
           </form>
        </Box>
    );
-};
+}
 
-export default UserEdit;
+export default CreateUser;

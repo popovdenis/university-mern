@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {Box, useTheme, Typography, Button} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, useTheme, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {DataGrid} from "@mui/x-data-grid";
-import {tokens} from "../../theme";
-import {AdminPanelSettingsOutlined} from "@mui/icons-material";
-import {LockOpenOutlined} from "@mui/icons-material";
+import { DataGrid } from "@mui/x-data-grid";
+import { tokens } from "../../theme";
+import { AdminPanelSettingsOutlined } from "@mui/icons-material";
+import { LockOpenOutlined } from "@mui/icons-material";
 import Header from "../../components/Header";
+import ConfirmationDialog from "../../components/ConfirmationDeleteDialog";
 import axios from "axios";
 
 function Users() {
@@ -13,7 +14,7 @@ function Users() {
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
 
-    const [data, setData] = useState([]);
+    const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -21,26 +22,50 @@ function Users() {
     });
     const [rowCount, setRowCount] = useState(0);
 
-    const fetchData = async (page, pageSize) => {
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const handleDeleteClick = (user) => {
+        setSelectedUser(user);
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setSelectedUser(null);
+        setOpenDialog(false);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await axios.delete(`http://localhost:5001/admin-users/${selectedUser.id}`);
+            setUsers(users.filter((user) => user.id !== selectedUser.id));
+        } catch (error) {
+            console.error(error);
+        } finally {
+            handleCloseDialog();
+        }
+    };
+
+    const fetchUsers = async (page, pageSize) => {
         setLoading(true);
         try {
             const response = await axios.get("http://localhost:5001/admin-users", {
                 params: {
                     _page: page + 1,
                     _limit: pageSize,
-                }
+                },
             });
-            setData(response.data);
+            setUsers(response.data);
             setRowCount(parseInt(response.headers["x-total-count"]));
         } catch (error) {
-            console.log('Error while fetching data:', error);
+            console.log("Error while fetching users:", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchData(paginationModel.page, paginationModel.pageSize);
+        fetchUsers(paginationModel.page, paginationModel.pageSize);
     }, [paginationModel]);
 
     const handlePaginationChange = (model) => {
@@ -72,30 +97,29 @@ function Users() {
             field: "isActive",
             headerName: "Status",
             flex: 1,
-            render: ({ row }) => {
-                return (
-                    <Box
-                        width="60%"
-                        m="0 auth"
-                        p="0.2rem"
-                        display="flex"
-                        justifyContent="center"
-                        backgroundColor={
-                            row.isActive ? colors.greenAccent[600] : colors.grey[600]
-                        }
-                        borderRadius="5px"
-                    >
-                        {row.isActive ? <LockOpenOutlined /> : <AdminPanelSettingsOutlined />}
-                        <Typography color={colors.grey[100]} sx={{ ml: "0.2rem" }}>
-                            {row.isActive ? "Active" : "Inactive"}
-                        </Typography>
-                    </Box>
-                )
-            }
+            render: ({ row }) => (
+                <Box
+                    width="60%"
+                    m="0 auth"
+                    p="0.2rem"
+                    display="flex"
+                    justifyContent="center"
+                    backgroundColor={
+                        row.isActive ? colors.greenAccent[600] : colors.grey[600]
+                    }
+                    borderRadius="5px"
+                >
+                    {row.isActive ? <LockOpenOutlined /> : <AdminPanelSettingsOutlined />}
+                    <Typography color={colors.grey[100]} sx={{ ml: "0.2rem" }}>
+                        {row.isActive ? "Active" : "Inactive"}
+                    </Typography>
+                </Box>
+            ),
         },
         {
-            field: "actions",
-            headerName: "Actions",
+            field: "edit",
+            headerName: "Edit",
+            flex: 0.5,
             renderCell: ({ row }) => (
                 <Button
                     variant="contained"
@@ -106,18 +130,41 @@ function Users() {
                 </Button>
             ),
         },
+        {
+            field: "delete",
+            headerName: "Delete",
+            flex: 0.5,
+            renderCell: ({ row }) => (
+                <Button
+                    variant="contained"
+                    className="cancel-button"
+                    onClick={() => handleDeleteClick(row)}
+                >
+                    Delete
+                </Button>
+            ),
+        },
     ];
 
     return (
         <Box m="0.5rem 1rem">
-            <Header title="Users"/>
+            <Header title="Users" />
+            <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button
+                    variant="contained"
+                    className="save-button"
+                    onClick={() => navigate("/users/create")}
+                >
+                    Create User
+                </Button>
+            </Box>
             <Box
                 margin="0.5rem 1rem"
                 m="2rem 0 0 0"
                 height="63.5vh"
             >
                 <DataGrid
-                    rows={data}
+                    rows={users}
                     columns={columns}
                     loading={loading}
                     paginationMode="server"
@@ -126,6 +173,15 @@ function Users() {
                     rowCount={rowCount}
                     rowsPerPageOptions={[10, 25, 50, 100]}
                     pagination
+                />
+                <ConfirmationDialog
+                    open={openDialog}
+                    title="Delete User"
+                    contentText={`Are you sure you want to delete user ${selectedUser?.firstname} ${selectedUser?.lastname}?`}
+                    onClose={handleCloseDialog}
+                    onConfirm={handleConfirmDelete}
+                    confirmText="Delete"
+                    cancelText="Cancel"
                 />
             </Box>
         </Box>

@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AdminUsersService } from './admin-users.service';
-import { AdminUser } from './admin-users.schema';
 
 @Controller('admin-users')
 export class AdminUsersController {
@@ -15,14 +14,13 @@ export class AdminUsersController {
         try {
             const newAdminUser = await this.adminUsersService.create(createAdminUserDto);
 
-            // Преобразуем результат, чтобы удалить _id
             const transformedUser = {
                 ...newAdminUser.toObject(),
-                id: newAdminUser._id, // Переименовываем _id в id
+                id: newAdminUser._id,
             };
-            delete transformedUser._id; // Удаляем _id
+            delete transformedUser._id;
 
-            return res.status(201).json(transformedUser); // Ожидаемый формат ответа
+            return res.status(201).json(transformedUser);
         } catch (error) {
             console.error('Error creating admin user:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
@@ -33,13 +31,11 @@ export class AdminUsersController {
     async findAll(@Res() res: Response): Promise<any> {
         const adminUsers = await this.adminUsersService.findAll();
 
-        // Преобразуем массив, чтобы заменить `_id` на `id`
         const transformedUsers = adminUsers.map(user => ({
             ...user.toObject(),
             id: user._id,
         }));
 
-        // Устанавливаем заголовки
         res.setHeader('X-Total-Count', transformedUsers.length.toString());
         res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
 
