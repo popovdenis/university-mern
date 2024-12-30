@@ -13,6 +13,10 @@ import {
    AdminPanelSettings,
    AdminPanelSettingsOutlined,
 } from "@mui/icons-material";
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+
 import { Link } from "react-router-dom";
 
 const SidebarItem = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
@@ -89,7 +93,6 @@ const Sidebar = () => {
                     </Box>
                 )}
 
-                {/* Menu Items */}
                 <Box paddingLeft={isCollapsed ? undefined : "10%"}>
                    <SidebarItem
                        title="Dashboard"
@@ -99,6 +102,8 @@ const Sidebar = () => {
                        setSelected={setSelected}
                        isCollapsed={isCollapsed}
                    />
+
+                   {/* Customers */}
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       Customers
                    </Typography>
@@ -106,9 +111,7 @@ const Sidebar = () => {
                        label={!isCollapsed && "Customers"}
                        title="Customers"
                        icon={<PeopleTwoTone />}
-                       style={{
-                          color: colors.grey[100],
-                       }}
+                       style={{ color: colors.grey[100] }}
                    >
                       <SidebarItem
                           title="All Customers"
@@ -127,6 +130,36 @@ const Sidebar = () => {
                           isCollapsed={isCollapsed}
                       />
                    </SubMenu>
+
+                   {/* Courses */}
+                   <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
+                      Courses
+                   </Typography>
+                   <SubMenu
+                       label={!isCollapsed && "Courses"}
+                       title="Courses"
+                       icon={<LibraryBooksIcon />}
+                       style={{ color: colors.grey[100] }}
+                   >
+                      <SidebarItem
+                          title="All Courses"
+                          to="/courses"
+                          icon={<CollectionsBookmarkIcon />}
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                      <SidebarItem
+                          title="New Course"
+                          to="/courses/create"
+                          icon={<BookmarkAddIcon />}
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                   </SubMenu>
+
+                   {/* Graphs */}
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       Graphs
                    </Typography>
@@ -154,11 +187,13 @@ const Sidebar = () => {
                        setSelected={setSelected}
                        isCollapsed={isCollapsed}
                    />
+
+                   {/* System */}
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       System
                    </Typography>
 
-                   {/* SubMenu for Users */}
+                   {/* Users */}
                    <SubMenu
                        label={!isCollapsed && "Users"}
                        title="Users"

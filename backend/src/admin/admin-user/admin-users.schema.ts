@@ -1,8 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ timestamps: true, collection: 'customer_entity' })
-export class Customer extends Document {
+@Schema({ timestamps: true, collection: 'admin_user' })
+export class AdminUser extends Document {
     @Prop({ required: true, minlength: 3 })
     firstname: string;
 
@@ -17,12 +17,6 @@ export class Customer extends Document {
 
     @Prop({ default: true })
     isActive: boolean;
-
-    @Prop({ default: Date.now })
-    createdAt: Date;
-
-    @Prop({ default: Date.now })
-    updatedAt: Date;
 }
 
-export const CustomerSchema = SchemaFactory.createForClass(Customer);
+export const AdminUserSchema = SchemaFactory.createForClass(AdminUser);
