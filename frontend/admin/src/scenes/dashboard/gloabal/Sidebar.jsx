@@ -41,24 +41,13 @@ const Sidebar = () => {
    const [selected, setSelected] = useState("Dashboard");
 
    return (
-       <Box
-           sx={{
-              "& .pro-sidebar": {
-                 backgroundColor: colors.primary[400], // Обновленный фон
-              },
-              "& .pro-menu-item": {
-                 color: colors.grey[100], // Темный текст для светлой темы
-              },
-              "& .pro-menu-item.active": {
-                 color: colors.blueAccent[500], // Активный элемент
-                 backgroundColor: colors.primary[200], // Мягкий фон для активного
-              },
-              "& .pro-menu-item:hover": {
-                 color: colors.primary[900], // Контрастный текст при наведении
-              },
-           }}
-       >
-          <ProSidebar collapsed={isCollapsed}>
+       <Box>
+          <ProSidebar collapsed={isCollapsed}
+            style={{
+               backgroundColor: colors.sidebar.bg,
+               color: colors.sidebar.text,
+            }}
+          >
              <Menu>
                 {/* Toggle Button */}
                 <MenuItem

@@ -2,12 +2,11 @@ import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material";
 
 //color desing tokens
-
 export const tokens = (mode) => ({
   ...(mode === "dark"
       ? {
         grey: {
-          100: "#d3d3d3",
+          100: "#ffffff",
           200: "#b0b0b0",
           300: "#8d8d8d",
           400: "#6a6a6a",
@@ -21,12 +20,16 @@ export const tokens = (mode) => ({
           100: "#c4c4c4",
           200: "#9a9a9a",
           300: "#707070",
-          400: "#383838", // основной цвет фона
+          400: "#383838", // основной фон
           500: "#1e1e1e",
           600: "#171717",
           700: "#111111",
           800: "#0b0b0b",
           900: "#050505",
+        },
+        sidebar: {
+          bg: "#2c2c2c",
+          text: "#e0e0e0",
         },
         greenAccent: {
           100: "#e0f7ec",
@@ -60,11 +63,11 @@ export const tokens = (mode) => ({
           700: "#933939",
           800: "#622626",
           900: "#311313",
-        },
+        }
       }
       : {
         grey: {
-          100: "#212121", // Более темный текст
+          100: "#212121",
           200: "#424242",
           300: "#616161",
           400: "#757575",
@@ -77,13 +80,17 @@ export const tokens = (mode) => ({
         primary: {
           100: "#ffffff",
           200: "#fafafa",
-          300: "#f4f4f4",
-          400: "#eeeeee",
-          500: "#e8e8e8", // основной цвет фона
-          600: "#c6c6c6",
-          700: "#a3a3a3",
-          800: "#818181",
-          900: "#5e5e5e",
+          300: "#f5f5f5",
+          400: "#ededed",
+          500: "#e5e5e5",
+          600: "#cccccc",
+          700: "#b2b2b2",
+          800: "#999999",
+          900: "#7f7f7f",
+        },
+        sidebar: {
+          bg: "#fafafa",
+          text: "#212121",
         },
         greenAccent: {
           100: "#f0fdf7",
@@ -117,7 +124,7 @@ export const tokens = (mode) => ({
           700: "#994c4c",
           800: "#663333",
           900: "#331919",
-        },
+        }
       }),
 });
 
@@ -129,7 +136,7 @@ export const themeSettins = (mode) => {
       ...(mode === "dark"
           ? {
             primary: {
-              main: colors.primary[400],
+              main: "#1f1f1f",
             },
             secondary: {
               main: colors.greenAccent[400],
@@ -143,10 +150,6 @@ export const themeSettins = (mode) => {
               default: colors.primary[500],
               paper: colors.primary[600],
             },
-            sidebar: {
-              bg: colors.primary[600],
-              text: colors.grey[100]
-            }
           }
           : {
             primary: {
@@ -164,10 +167,6 @@ export const themeSettins = (mode) => {
               default: colors.primary[100],
               paper: colors.primary[300],
             },
-            sidebar: {
-              bg: colors.primary[200],
-              text: colors.grey[900]
-            }
           }),
     },
     typography: {
@@ -206,7 +205,7 @@ export const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 export const useMode = () => {
-  const [mode, setMode] = useState("dark");
+  const [mode, setMode] = useState("light");
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
