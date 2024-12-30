@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Sidebar as ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, Typography, IconButton, useTheme, Tooltip } from "@mui/material";
 import { tokens } from "../../../theme";
 import {
+   PeopleTwoTone,
    PeopleOutlined,
-   ReceiptOutlined,
-   PersonOutlined,
    BarChartOutlined,
    PieChartOutlineOutlined,
    TimelineOutlined,
    MenuOutlined,
+   AddCircleOutline,
+   AdminPanelSettings,
+   AdminPanelSettingsOutlined,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
@@ -42,11 +44,12 @@ const Sidebar = () => {
 
    return (
        <Box>
-          <ProSidebar collapsed={isCollapsed}
-            style={{
-               backgroundColor: colors.sidebar.bg,
-               color: colors.sidebar.text,
-            }}
+          <ProSidebar
+              collapsed={isCollapsed}
+              style={{
+                 backgroundColor: colors.sidebar.bg,
+                 color: colors.sidebar.text,
+              }}
           >
              <Menu>
                 {/* Toggle Button */}
@@ -99,22 +102,47 @@ const Sidebar = () => {
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       Customers
                    </Typography>
-                   <SidebarItem
-                       title="All Customers"
-                       to="/contact"
-                       icon={<PersonOutlined />}
-                       selected={selected}
-                       setSelected={setSelected}
-                       isCollapsed={isCollapsed}
-                   />
-                   <SidebarItem
-                       title="Invoices"
-                       to="/invoices"
-                       icon={<ReceiptOutlined />}
-                       selected={selected}
-                       setSelected={setSelected}
-                       isCollapsed={isCollapsed}
-                   />
+                   <SubMenu
+                       label={!isCollapsed && "Customers"}
+                       title="Customers"
+                       icon={<PeopleTwoTone />}
+                       style={{
+                          color: colors.grey[100],
+                       }}
+                   >
+                      <SidebarItem
+                          title="All Customers"
+                          to="/customers"
+                          icon={<PeopleOutlined />}
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                      <SidebarItem
+                          title="New Customer"
+                          to="/customers/create"
+                          icon={<AddCircleOutline />}
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                   </SubMenu>
+                   {/*<SidebarItem*/}
+                   {/*    title="All Customers"*/}
+                   {/*    to="/contact"*/}
+                   {/*    icon={<PersonOutlined />}*/}
+                   {/*    selected={selected}*/}
+                   {/*    setSelected={setSelected}*/}
+                   {/*    isCollapsed={isCollapsed}*/}
+                   {/*/>*/}
+                   {/*<SidebarItem*/}
+                   {/*    title="Invoices"*/}
+                   {/*    to="/invoices"*/}
+                   {/*    icon={<ReceiptOutlined />}*/}
+                   {/*    selected={selected}*/}
+                   {/*    setSelected={setSelected}*/}
+                   {/*    isCollapsed={isCollapsed}*/}
+                   {/*/>*/}
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       Graphs
                    </Typography>
@@ -145,14 +173,33 @@ const Sidebar = () => {
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       System
                    </Typography>
-                   <SidebarItem
-                       title="All Users"
-                       to="/users"
-                       icon={<PeopleOutlined />}
-                       selected={selected}
-                       setSelected={setSelected}
-                       isCollapsed={isCollapsed}
-                   />
+
+                   {/* SubMenu for Users */}
+                   <SubMenu
+                       label={!isCollapsed && "Users"}
+                       title="Users"
+                       icon={<AdminPanelSettings />}
+                       style={{
+                          color: colors.grey[100],
+                       }}
+                   >
+                      <SidebarItem
+                          title="All Users"
+                          to="/users"
+                          icon={<AdminPanelSettingsOutlined />}
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                      <SidebarItem
+                          title="New User"
+                          to="/users/create"
+                          icon={<AddCircleOutline />}
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                   </SubMenu>
                 </Box>
              </Menu>
           </ProSidebar>
