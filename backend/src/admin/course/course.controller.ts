@@ -1,10 +1,14 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Res, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { CourseService } from './course.service';
+import { AttributeService } from '../attribute/attribute.service';
 
 @Controller('courses')
 export class CourseController {
-    constructor(private readonly courseService: CourseService) {}
+    constructor(
+        private readonly courseService: CourseService,
+        private readonly attributeService: AttributeService
+    ) {}
 
     @Post()
     async create(
@@ -70,6 +74,7 @@ export class CourseController {
             const transformedCourse = {
                 ...course.toObject(),
                 id: course._id,
+                attributes: await this.attributeService.findCourseAttributes()
             };
 
             return res.json(transformedCourse);

@@ -3,8 +3,6 @@ import { Box, useTheme, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { AdminPanelSettingsOutlined } from "@mui/icons-material";
-import { LockOpenOutlined } from "@mui/icons-material";
 import Header from "../../components/Header";
 import ConfirmationDialog from "../../components/ConfirmationDeleteDialog";
 import axios from "axios";
@@ -92,15 +90,29 @@ function Courses() {
             field: "level",
             headerName: "Level",
             flex: 1,
+            cellClassName: "data-grid-cell-center",
+            renderCell: ({ row }) => (
+                <Box
+                    width="60%"
+                    m="10px 0"
+                    p="0.2rem"
+                    display="flex"
+                >
+                    <Typography color={colors.grey[100]}>
+                        {row.level.charAt(0).toUpperCase() + row.level.slice(1)}
+                    </Typography>
+                </Box>
+            )
         },
         {
             field: "isActive",
             headerName: "Status",
             flex: 1,
-            render: ({ row }) => (
+            cellClassName: "data-grid-cell-center",
+            renderCell: ({ row }) => (
                 <Box
                     width="60%"
-                    m="0 auth"
+                    m="10px 0"
                     p="0.2rem"
                     display="flex"
                     justifyContent="center"
@@ -109,12 +121,11 @@ function Courses() {
                     }
                     borderRadius="5px"
                 >
-                    {row.isActive ? <LockOpenOutlined /> : <AdminPanelSettingsOutlined />}
-                    <Typography color={colors.grey[100]} sx={{ ml: "0.2rem" }}>
+                    <Typography color={colors.grey[100]}>
                         {row.isActive ? "Active" : "Inactive"}
                     </Typography>
                 </Box>
-            ),
+            )
         },
         {
             field: "edit",
@@ -128,7 +139,7 @@ function Courses() {
                 >
                     Edit
                 </Button>
-            ),
+            )
         },
         {
             field: "delete",

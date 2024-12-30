@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, TextField, Switch, FormControlLabel, Typography } from "@mui/material";
+import {
+   Box,
+   MenuItem,
+   Button,
+   TextField,
+   Switch,
+   FormControlLabel,
+   Typography,
+   FormControl,
+   InputLabel,
+   Select
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { useParams, useNavigate } from "react-router-dom";
@@ -10,13 +21,12 @@ const CourseEdit = () => {
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-
-   const [user, setUser] = useState({
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+   const [attributes, setAttributes] = useState([]);
+   const [course, setCourse] = useState({
+      title: '',
+      description: '',
+      duration: '',
+      level:  '',
       isActive: true,
    });
 
@@ -24,43 +34,41 @@ const CourseEdit = () => {
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
-      const fetchUser = async () => {
+      const fetchCourse = async () => {
          try {
-            const response = await axios.get(`http://localhost:5001/customers/${id}`);
-            setUser({
-               ...response.data,
-               password: "",
-               confirmPassword: "",
+            const response = await axios.get(`http://localhost:5001/courses/${id}`);
+            setCourse({
+               ...response.data
             });
+            if (response.data.attributes && response.data.attributes.length) {
+               setAttributes(response.data.attributes);
+            }
          } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Error fetching course data:", error);
          }
       };
 
-      fetchUser();
+      fetchCourse();
    }, [id]);
 
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
-      setUser((prevUser) => ({
-         ...prevUser,
+      setCourse((prevCourse) => ({
+         ...prevCourse,
          [name]: type === "checkbox" ? checked : value,
       }));
    };
 
    const validate = () => {
       const newErrors = {};
-      if (!user.firstname.trim()) {
-         newErrors.firstname = "Firstname is required";
+      if (!course.title.trim()) {
+         newErrors.title = "Title is required";
       }
-      if (!user.lastname.trim()) {
-         newErrors.lastname = "Lastname is required";
+      if (!course.duration.trim()) {
+         newErrors.duration = "Duration is required";
       }
-      if (!user.email.trim()) {
-         newErrors.email = "Email is required";
-      }
-      if (user.password !== user.confirmPassword) {
-         newErrors.confirmPassword = "Passwords do not match";
+      if (!course.level.trim()) {
+         newErrors.level = "Duration is required";
       }
 
       setErrors(newErrors);
@@ -74,16 +82,10 @@ const CourseEdit = () => {
 
       setLoading(true);
       try {
-         await axios.put(`http://localhost:5001/customers/${id}`, {
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            isActive: user.isActive,
-            password: user.password || undefined,
-         });
-         navigate("/customers");
+         await axios.put(`http://localhost:5001/courses/${id}`, course);
+         navigate("/courses");
       } catch (error) {
-         console.error("Error updating user:", error);
+         console.error("Error updating course:", error);
       } finally {
          setLoading(false);
       }
@@ -92,73 +94,93 @@ const CourseEdit = () => {
    return (
        <Box m="1.5rem">
           <Typography variant="h4" color={colors.grey[100]} gutterBottom>
-             Edit User
+             Edit Course
           </Typography>
           <form onSubmit={handleSubmit}>
              <Box display="grid" gap="1.5rem" gridTemplateColumns="1fr 1fr">
                 <Box>
                    <TextField
                        fullWidth
-                       label="Firstname *"
-                       name="firstname"
-                       value={user.firstname}
+                       label="Title *"
+                       name="title"
+                       value={course.title}
                        onChange={handleChange}
-                       error={!!errors.firstname}
-                       helperText={errors.firstname}
+                       error={!!errors.title}
+                       helperText={errors.title}
                    />
                 </Box>
                 <Box>
                    <TextField
                        fullWidth
-                       label="Lastname *"
-                       name="lastname"
-                       value={user.lastname}
+                       label="Description *"
+                       name="description"
+                       value={course.description}
                        onChange={handleChange}
-                       error={!!errors.lastname}
-                       helperText={errors.lastname}
+                       error={!!errors.description}
+                       helperText={errors.description}
                    />
                 </Box>
                 <Box gridColumn="span 2">
                    <TextField
                        fullWidth
-                       label="Email *"
-                       name="email"
-                       value={user.email}
+                       label="Description *"
+                       name="description"
+                       value={course.description}
                        onChange={handleChange}
-                       error={!!errors.email}
-                       helperText={errors.email}
+                       error={!!errors.description}
+                       helperText={errors.description}
+                       margin="normal"
+                       rows={4}
                    />
                 </Box>
                 <Box>
-                   <TextField
-                       fullWidth
-                       label="Password"
-                       name="password"
-                       type="password"
-                       value={user.password}
-                       onChange={handleChange}
-                       error={!!errors.password}
-                       helperText={errors.password}
-                   />
+                   <FormControl fullWidth margin="normal">
+                      <InputLabel id="duration-label">Duration</InputLabel>
+                      <Select
+                          labelId="duration-label"
+                          name="duration"
+                          value={course.duration}
+                          onChange={handleChange}
+                      >
+                         {!loading &&
+                             attributes.map((attribute) => {
+                                if (attribute.attributeCode === 'duration') {
+                                   return attribute.options.map((option, index) => (
+                                       <MenuItem key={index} value={option}>{option}</MenuItem>
+                                   ))
+                                }
+                             })
+                         }
+                      </Select>
+                   </FormControl>
                 </Box>
                 <Box>
-                   <TextField
-                       fullWidth
-                       label="Confirm Password"
-                       name="confirmPassword"
-                       type="password"
-                       value={user.confirmPassword}
-                       onChange={handleChange}
-                       error={!!errors.confirmPassword}
-                       helperText={errors.confirmPassword}
-                   />
+                   <FormControl fullWidth margin="normal">
+                      <InputLabel id="level-label">Level</InputLabel>
+                      <Select
+                          labelId="level-label"
+                          name="level"
+                          value={course.level}
+                          onChange={handleChange}
+                      >
+                         {!loading &&
+                             attributes.map((attribute) => {
+                                if (attribute.attributeCode === 'level') {
+                                   return attribute.options.map((option, index) => (
+                                       <MenuItem key={index} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</MenuItem>
+                                   ))
+                                }
+                             })
+                         }
+                      </Select>
+                   </FormControl>
                 </Box>
                 <Box gridColumn="span 2">
                    <FormControlLabel
                        control={
                           <Switch
                               name="isActive"
-                              checked={user.isActive}
+                              checked={course.isActive}
                               onChange={handleChange}
                           />
                        }
@@ -175,7 +197,7 @@ const CourseEdit = () => {
                 >
                    {loading ? "Saving..." : "Save"}
                 </Button>
-                <Button variant="contained" onClick={() => navigate("/customers")} className="cancel-button">
+                <Button variant="contained" onClick={() => navigate("/courses")} className="cancel-button">
                    Cancel
                 </Button>
              </Box>
