@@ -132,6 +132,7 @@ function Users() {
                     loading={loading}
                     paginationModel={paginationModel}
                     onPaginationModelChange={handlePaginationChange}
+                    rowCount={rowCount}
                     rowsPerPageOptions={[10, 25, 50, 100]}
                     pagination
                 />
