@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Res, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { CustomerService } from './customer.service';
 
@@ -12,6 +12,11 @@ export class CustomerController {
         @Res() res: Response,
     ): Promise<any> {
         try {
+            const existingCustomer = await this.customerService.findByEmail(createAdminUserDto.email);
+            if (existingCustomer) {
+                return res.status(400).json({ message: 'Customer with this email already exists' });
+            }
+
             const newAdminUser = await this.customerService.create(createAdminUserDto);
 
             const transformedUser = {
@@ -28,18 +33,30 @@ export class CustomerController {
     }
 
     @Get()
-    async findAll(@Res() res: Response): Promise<any> {
-        const adminUsers = await this.customerService.findAll();
+    async findAll(@Res() res: Response, @Query('_page') page: string, @Query('_limit') limit: string): Promise<any> {
+        try {
+            const pageNumber = parseInt(page, 10) || 1;
+            const limitNumber = parseInt(limit, 10) || 10;
+            const skip = (pageNumber - 1) * limitNumber;
 
-        const transformedUsers = adminUsers.map(user => ({
-            ...user.toObject(),
-            id: user._id,
-        }));
+            const totalCustomers = await this.customerService.count();
 
-        res.setHeader('X-Total-Count', transformedUsers.length.toString());
-        res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+            const customers = await this.customerService.findAll(skip, limitNumber);
 
-        return res.json(transformedUsers);
+            const transformedCustomers = customers.map((customer) => ({
+                ...customer.toObject(),
+                id: customer._id,
+            }));
+
+            // Установка заголовков для клиента
+            res.setHeader('X-Total-Count', totalCustomers.toString());
+            res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+
+            return res.json(transformedCustomers);
+        } catch (error) {
+            console.error('Error fetching customers:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
     }
 
     @Get(':id')

@@ -11,6 +11,7 @@ function CreateUser() {
    const colors = tokens(theme.palette.mode);
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
    const [formData, setFormData] = useState({
       firstname: "",
       lastname: "",
@@ -63,7 +64,11 @@ function CreateUser() {
          });
          navigate("/users");
       } catch (error) {
-         console.log("Error while adding user:", error);
+         if (error.response && error.response.status === 400) {
+            setErrorMessage(error.response.data.message);
+         } else {
+            console.error("Unexpected error:", error);
+         }
       } finally {
          setLoading(false);
       }
@@ -74,6 +79,11 @@ function CreateUser() {
           <Typography variant="h4" color={colors.grey[100]} gutterBottom>
              Create New User
           </Typography>
+          {errorMessage && (
+              <Typography color="error" mb={2}>
+                 {errorMessage}
+              </Typography>
+          )}
           <form onSubmit={handleSubmit}>
              <Box display="grid" gap="1.5rem" gridTemplateColumns="1fr 1fr">
                 <Box>

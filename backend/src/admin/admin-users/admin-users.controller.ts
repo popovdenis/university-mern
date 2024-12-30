@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Res } from '@nestjs/common';
+import {Controller, Get, Post, Put, Delete, Param, Body, Res, Query} from '@nestjs/common';
 import { Response } from 'express';
 import { AdminUsersService } from './admin-users.service';
 
@@ -12,6 +12,11 @@ export class AdminUsersController {
         @Res() res: Response,
     ): Promise<any> {
         try {
+            const existingUser = await this.adminUsersService.findByEmail(createAdminUserDto.email);
+            if (existingUser) {
+                return res.status(400).json({ message: 'User with this email already exists' });
+            }
+
             const newAdminUser = await this.adminUsersService.create(createAdminUserDto);
 
             const transformedUser = {
@@ -22,24 +27,36 @@ export class AdminUsersController {
 
             return res.status(201).json(transformedUser);
         } catch (error) {
-            console.error('Error creating admin user:', error.message);
+            console.error('Error creating user:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
 
     @Get()
-    async findAll(@Res() res: Response): Promise<any> {
-        const adminUsers = await this.adminUsersService.findAll();
+    async findAll(@Res() res: Response, @Query('_page') page: string, @Query('_limit') limit: string): Promise<any> {
+        try {
+            const pageNumber = parseInt(page, 10) || 1;
+            const limitNumber = parseInt(limit, 10) || 10;
+            const skip = (pageNumber - 1) * limitNumber;
 
-        const transformedUsers = adminUsers.map(user => ({
-            ...user.toObject(),
-            id: user._id,
-        }));
+            const totalCustomers = await this.adminUsersService.count();
 
-        res.setHeader('X-Total-Count', transformedUsers.length.toString());
-        res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+            const customers = await this.adminUsersService.findAll(skip, limitNumber);
 
-        return res.json(transformedUsers);
+            const transformedCustomers = customers.map((customer) => ({
+                ...customer.toObject(),
+                id: customer._id,
+            }));
+
+            // Установка заголовков для клиента
+            res.setHeader('X-Total-Count', totalCustomers.toString());
+            res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+
+            return res.json(transformedCustomers);
+        } catch (error) {
+            console.error('Error fetching customers:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
     }
 
     @Get(':id')
