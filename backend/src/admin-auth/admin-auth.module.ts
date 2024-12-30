@@ -3,7 +3,7 @@ import { AdminAuthService } from './admin-auth.service';
 import { AdminAuthController } from './admin-auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-import { AdminUser, AdminUserSchema } from '../admin/admin-users/admin-users.schema';
+import { AdminUser, AdminUserSchema } from '../admin/admin-user/admin-users.schema';
 
 @Module({
   imports: [

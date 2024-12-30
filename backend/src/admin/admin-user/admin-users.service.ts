@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AdminUser } from './admin-users.schema';
-import {Customer} from "../customers/customer.schema";
+import {Customer} from "../customer/customer.schema";
 
 @Injectable()
 export class AdminUsersService {

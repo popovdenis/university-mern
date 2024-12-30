@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Customer } from './customer.schema';
-import {AdminUser} from "../admin-users/admin-users.schema";
 
 @Injectable()
 export class CustomerService {
     constructor(@InjectModel(Customer.name) private readonly customerModel: Model<Customer>) {}
 
-    async create(createAdminUserDto: any): Promise<Customer> {
-        const newCustomer = new this.customerModel(createAdminUserDto);
+    async create(createCustomerDto: any): Promise<Customer> {
+        const newCustomer = new this.customerModel(createCustomerDto);
         return newCustomer.save();
     }
 
@@ -25,12 +24,12 @@ export class CustomerService {
         return this.customerModel.findById(id).exec();
     }
 
-    async findByEmail(email: string): Promise<AdminUser | null> {
+    async findByEmail(email: string): Promise<Customer | null> {
         return this.customerModel.findOne({ email });
     }
 
-    async update(id: string, updateAdminUserDto: Partial<Customer>): Promise<Customer> {
-        return this.customerModel.findByIdAndUpdate(id, updateAdminUserDto, { new: true }).exec();
+    async update(id: string, updateCustomerDto: Partial<Customer>): Promise<Customer> {
+        return this.customerModel.findByIdAndUpdate(id, updateCustomerDto, { new: true }).exec();
     }
 
     async delete(id: string): Promise<Customer> {

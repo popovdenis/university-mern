@@ -8,26 +8,26 @@ export class CustomerController {
 
     @Post()
     async create(
-        @Body() createAdminUserDto: { firstname: string; lastname: string; email: string; password: string },
+        @Body() createCustomerDto: { firstname: string; lastname: string; email: string; password: string },
         @Res() res: Response,
     ): Promise<any> {
         try {
-            const existingCustomer = await this.customerService.findByEmail(createAdminUserDto.email);
+            const existingCustomer = await this.customerService.findByEmail(createCustomerDto.email);
             if (existingCustomer) {
                 return res.status(400).json({ message: 'Customer with this email already exists' });
             }
 
-            const newAdminUser = await this.customerService.create(createAdminUserDto);
+            const newCustomer = await this.customerService.create(createCustomerDto);
 
             const transformedUser = {
-                ...newAdminUser.toObject(),
-                id: newAdminUser._id,
+                ...newCustomer.toObject(),
+                id: newCustomer._id,
             };
             delete transformedUser._id;
 
             return res.status(201).json(transformedUser);
         } catch (error) {
-            console.error('Error creating admin user:', error.message);
+            console.error('Error creating customer:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -62,19 +62,19 @@ export class CustomerController {
     @Get(':id')
     async findById(@Param('id') id: string, @Res() res: Response): Promise<any> {
         try {
-            const adminUser = await this.customerService.findById(id);
-            if (!adminUser) {
-                return res.status(404).json({ message: 'Admin user not found' });
+            const customer = await this.customerService.findById(id);
+            if (!customer) {
+                return res.status(404).json({ message: 'Customer user not found' });
             }
 
             const transformedUser = {
-                ...adminUser.toObject(),
-                id: adminUser._id,
+                ...customer.toObject(),
+                id: customer._id,
             };
 
             return res.json(transformedUser);
         } catch (error) {
-            console.error('Error fetching admin user:', error.message);
+            console.error('Error fetching customer:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -82,18 +82,18 @@ export class CustomerController {
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() updateAdminUserDto: Partial<{ firstname: string; lastname: string; email: string; password: string; isActive: boolean }>,
+        @Body() updateCustomerDto: Partial<{ firstname: string; lastname: string; email: string; password: string; isActive: boolean }>,
         @Res() res: Response,
     ): Promise<any> {
         try {
-            const updatedAdminUser = await this.customerService.update(id, updateAdminUserDto);
-            if (!updatedAdminUser) {
-                return res.status(404).json({ message: 'Admin user not found' });
+            const updatedCustomer = await this.customerService.update(id, updateCustomerDto);
+            if (!updatedCustomer) {
+                return res.status(404).json({ message: 'Customer user not found' });
             }
 
-            return res.json(updatedAdminUser);
+            return res.json(updatedCustomer);
         } catch (error) {
-            console.error('Error updating admin user:', error.message);
+            console.error('Error updating customer:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -101,14 +101,14 @@ export class CustomerController {
     @Delete(':id')
     async delete(@Param('id') id: string, @Res() res: Response): Promise<any> {
         try {
-            const deletedAdminUser = await this.customerService.delete(id);
-            if (!deletedAdminUser) {
-                return res.status(404).json({ message: 'Admin user not found' });
+            const deletedCustomer = await this.customerService.delete(id);
+            if (!deletedCustomer) {
+                return res.status(404).json({ message: 'Customer user not found' });
             }
 
-            return res.json({ message: 'Admin user deleted successfully' });
+            return res.json({ message: 'Customer deleted successfully' });
         } catch (error) {
-            console.error('Error deleting admin user:', error.message);
+            console.error('Error deleting customer:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }

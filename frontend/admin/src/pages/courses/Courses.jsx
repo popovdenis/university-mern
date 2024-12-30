@@ -23,22 +23,22 @@ function Courses() {
     const [rowCount, setRowCount] = useState(0);
 
     const [openDialog, setOpenDialog] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedEntity, setSelectedEntity] = useState(null);
 
-    const handleDeleteClick = (user) => {
-        setSelectedUser(user);
+    const handleDeleteClick = (entity) => {
+        setSelectedEntity(entity);
         setOpenDialog(true);
     };
 
     const handleCloseDialog = () => {
-        setSelectedUser(null);
+        setSelectedEntity(null);
         setOpenDialog(false);
     };
 
     const handleConfirmDelete = async () => {
         try {
-            await axios.delete(`http://localhost:5001/courses/${selectedUser.id}`);
-            setCourses(courses.filter((user) => user.id !== selectedUser.id));
+            await axios.delete(`http://localhost:5001/courses/${selectedEntity.id}`);
+            setCourses(courses.filter((entity) => entity.id !== selectedEntity.id));
         } catch (error) {
             console.error(error);
         } finally {
@@ -78,19 +78,19 @@ function Courses() {
             headerName: "ID",
         },
         {
-            field: "firstname",
-            headerName: "Firstname",
+            field: "title",
+            headerName: "Title",
             flex: 1,
             cellClassName: "name-column--cell",
         },
         {
-            field: "lastname",
-            headerName: "Lastname",
+            field: "duration",
+            headerName: "Duration",
             flex: 1,
         },
         {
-            field: "email",
-            headerName: "Email",
+            field: "level",
+            headerName: "Level",
             flex: 1,
         },
         {
@@ -177,8 +177,8 @@ function Courses() {
                 />
                 <ConfirmationDialog
                     open={openDialog}
-                    title="Delete User"
-                    contentText={`Are you sure you want to delete user ${selectedUser?.firstname} ${selectedUser?.lastname}?`}
+                    title="Delete Course"
+                    contentText={`Are you sure you want to delete course ${selectedEntity?.title}?`}
                     onClose={handleCloseDialog}
                     onConfirm={handleConfirmDelete}
                     confirmText="Delete"
