@@ -127,22 +127,6 @@ const Sidebar = () => {
                           isCollapsed={isCollapsed}
                       />
                    </SubMenu>
-                   {/*<SidebarItem*/}
-                   {/*    title="All Customers"*/}
-                   {/*    to="/contact"*/}
-                   {/*    icon={<PersonOutlined />}*/}
-                   {/*    selected={selected}*/}
-                   {/*    setSelected={setSelected}*/}
-                   {/*    isCollapsed={isCollapsed}*/}
-                   {/*/>*/}
-                   {/*<SidebarItem*/}
-                   {/*    title="Invoices"*/}
-                   {/*    to="/invoices"*/}
-                   {/*    icon={<ReceiptOutlined />}*/}
-                   {/*    selected={selected}*/}
-                   {/*    setSelected={setSelected}*/}
-                   {/*    isCollapsed={isCollapsed}*/}
-                   {/*/>*/}
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
                       Graphs
                    </Typography>

@@ -5,6 +5,9 @@ import { Routes, Route } from "react-router-dom";
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar"
 import Dashboard from "./scenes/dashboard";
+import Customers from "./pages/customers/Customers";
+import CustomerEdit from "./pages/customers/CustomerEdit";
+import CreateCustomer from "./pages/customers/CustomerCreate";
 import Users from "./pages/users/Users";
 import UserEdit from "./pages/users/UserEdit";
 import UserCreate from "./pages/users/UserCreate";
@@ -28,6 +31,9 @@ const [theme, colorMode] = useMode();
               <Topbar />
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/customers/edit/:id" element={<CustomerEdit />} />
+                <Route path="/customers/create" element={<CreateCustomer />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/users/edit/:id" element={<UserEdit />} />
                 <Route path="/users/create" element={<UserCreate />} />
