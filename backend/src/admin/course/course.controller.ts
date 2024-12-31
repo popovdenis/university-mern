@@ -1,7 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Res, Query } from '@nestjs/common';
+import {Controller, Get, Post, Put, Delete, Param, Body, Res, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { Response } from 'express';
 import { CourseService } from './course.service';
 import { AttributeService } from '../attribute/attribute.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
 
 @Controller('courses')
 export class CourseController {
@@ -10,17 +14,33 @@ export class CourseController {
         private readonly attributeService: AttributeService
     ) {}
 
-    @Post()
-    async create(
-        @Body() createCourseDto: { firstname: string; lastname: string; email: string; password: string },
-        @Res() res: Response,
-    ): Promise<any> {
+    @Post('upload')
+    @UseInterceptors(
+        FileInterceptor('image', {
+            storage: diskStorage({
+                destination: './uploads',
+                filename: (req, file, cb) => {
+                    const ext = path.extname(file.originalname);
+                    cb(null, `${uuidv4()}${ext}`);
+                },
+            }),
+        }),
+    )
+    async uploadFile(@UploadedFile() file: any, @Res() res: Response) {
         try {
-            // const existingCustomer = await this.customerService.findByEmail(createCourseDto.email);
-            // if (existingCustomer) {
-            //     return res.status(400).json({ message: 'Customer with this email already exists' });
-            // }
+            if (!file) {
+                return res.status(400).json({ message: 'No file provided' });
+            }
+            return res.status(201).json({ filePath: `/uploads/${file.filename}` });
+        } catch (error) {
+            console.error('Error uploading file:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 
+    @Post()
+    async create(@Body() createCourseDto: any, @Res() res: Response): Promise<any> {
+        try {
             const newCourse = await this.courseService.create(createCourseDto);
 
             const transformedCourse = {

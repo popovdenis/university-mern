@@ -27,7 +27,7 @@ export class Course extends Document {
     @Prop({ required: false })
     image: string;
 
-    @Prop({ default: true, index: true })
+    @Prop({ required: true, default: true, index: true })
     isActive: boolean;
 }
 

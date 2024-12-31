@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {tokens} from "../../theme";
 import {useTheme} from "@mui/material/styles";
+import ImageUploader from "../../components/ImageUploader";
 
 function CreateCourse() {
    const navigate = useNavigate();
@@ -26,6 +27,9 @@ function CreateCourse() {
          ...prevUser,
          [name]: type === "checkbox" ? checked : value,
       }));
+   };
+   const handleImageUpload = (filePath) => {
+      setFormData((prev) => ({ ...prev, image: filePath }));
    };
 
    const validate = () => {
@@ -154,6 +158,9 @@ function CreateCourse() {
                        }
                        label="Active Status"
                    />
+                </Box>
+                <Box gridColumn="span 2">
+                   <ImageUploader onUpload={handleImageUpload} />
                 </Box>
              </Box>
              <Box mt="1.5rem" display="flex" gap={2}>
