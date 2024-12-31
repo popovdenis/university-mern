@@ -1,7 +1,21 @@
-import {Controller, Get, Post, Put, Delete, Param, Body, Res, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Param,
+    Body,
+    Res,
+    Query,
+    UseInterceptors,
+    UploadedFile,
+    HttpException, HttpStatus
+} from '@nestjs/common';
 import { Response } from 'express';
 import { CourseService } from './course.service';
 import { AttributeService } from '../attribute/attribute.service';
+import { CategoryService } from '../category/category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,7 +25,8 @@ import * as path from 'path';
 export class CourseController {
     constructor(
         private readonly courseService: CourseService,
-        private readonly attributeService: AttributeService
+        private readonly attributeService: AttributeService,
+        private readonly categoryService: CategoryService,
     ) {}
 
     @Post('upload')
@@ -91,15 +106,23 @@ export class CourseController {
     @Get(':id')
     async findById(@Param('id') id: string, @Res() res: Response): Promise<any> {
         try {
-            const course = await this.courseService.findById(id);
+            const course = await this.courseService.findByIdWithCategories(id);
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' });
             }
 
+            const allCategories = await this.categoryService.findAll();
+
             const transformedCourse = {
                 ...course.toObject(),
                 id: course._id,
-                attributes: await this.attributeService.findCourseAttributes()
+                attributes: await this.attributeService.findCourseAttributes(),
+                categories: allCategories.map((category) => ({
+                    id: category._id,
+                    title: category.title,
+                    description: category.description,
+                    path: category.path,
+                }))
             };
 
             return res.json(transformedCourse);
@@ -140,6 +163,47 @@ export class CourseController {
         } catch (error) {
             console.error('Error deleting course:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    @Put(':id/categories')
+    async assignCategories(
+        @Param('id') courseId: string,
+        @Body('categoryIds') categoryIds: string[],
+        @Res() res: Response,
+    ): Promise<any> {
+        try {
+            const updatedCourse = await this.courseService.assignCategories(courseId, categoryIds);
+            return res.json(updatedCourse);
+        } catch (error) {
+            console.error('Error assigning categories:', error.message);
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Delete(':id/categories/:categoryId')
+    async removeCategory(
+        @Param('id') courseId: string,
+        @Param('categoryId') categoryId: string,
+        @Res() res: Response,
+    ): Promise<any> {
+        try {
+            const updatedCourse = await this.courseService.removeCategory(courseId, categoryId);
+            return res.json(updatedCourse);
+        } catch (error) {
+            console.error('Error removing category:', error.message);
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('with-categories')
+    async getCoursesWithCategories(@Res() res: Response): Promise<any> {
+        try {
+            const courses = await this.courseService.findCoursesWithCategories();
+            return res.json(courses);
+        } catch (error) {
+            console.error('Error fetching courses with categories:', error.message);
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

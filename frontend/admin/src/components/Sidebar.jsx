@@ -16,6 +16,7 @@ import {
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
 import { Link } from "react-router-dom";
 
@@ -102,6 +103,25 @@ const Sidebar = () => {
                        setSelected={setSelected}
                        isCollapsed={isCollapsed}
                    />
+
+                   {/* Categories */}
+                   <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
+                      Customers
+                   </Typography>
+                   <SubMenu
+                       label={!isCollapsed && "Categories"}
+                       title="Categories"
+                       icon={<ChecklistRtlIcon />}
+                       style={{ color: colors.grey[100] }}
+                   >
+                      <SidebarItem
+                          title="Categories"
+                          to="/categories"
+                          selected={selected}
+                          setSelected={setSelected}
+                          isCollapsed={isCollapsed}
+                      />
+                   </SubMenu>
 
                    {/* Customers */}
                    <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>

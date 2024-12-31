@@ -1,43 +1,17 @@
-import {Controller, Get, Post, Put, Delete, Param, Body, Res, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {Controller, Get, Post, Put, Delete, Param, Body, Res, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { CategoryService } from './category.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { v4 as uuidv4 } from 'uuid';
-import * as path from 'path';
+import { Category } from './category.schema';
 
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
-    constructor(
-        private readonly categoryService: CategoryService
-    ) {}
-
-    @Post('upload')
-    @UseInterceptors(
-        FileInterceptor('image', {
-            storage: diskStorage({
-                destination: './uploads',
-                filename: (req, file, cb) => {
-                    const ext = path.extname(file.originalname);
-                    cb(null, `${uuidv4()}${ext}`);
-                },
-            }),
-        }),
-    )
-    async uploadFile(@UploadedFile() file: any, @Res() res: Response) {
-        try {
-            if (!file) {
-                return res.status(400).json({ message: 'No file provided' });
-            }
-            return res.status(201).json({ filePath: `/uploads/${file.filename}` });
-        } catch (error) {
-            console.error('Error uploading file:', error.message);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-    }
+    constructor(private readonly categoryService: CategoryService) {}
 
     @Post()
-    async create(@Body() createCategoryDto: any, @Res() res: Response): Promise<any> {
+    async create(
+        @Body() createCategoryDto: any,
+        @Res() res: Response,
+    ): Promise<any> {
         try {
             const newCategory = await this.categoryService.create(createCategoryDto);
 
@@ -50,7 +24,7 @@ export class CategoryController {
             return res.status(201).json(transformedCategory);
         } catch (error) {
             console.error('Error creating category:', error.message);
-            return res.status(500).json({ message: 'Internal server error' });
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -68,8 +42,7 @@ export class CategoryController {
             const skip = (pageNumber - 1) * limitNumber;
 
             const totalCategories = await this.categoryService.count();
-
-            const categories = await this.categoryService.findAll(skip, limitNumber, sortField, sortOrder);
+            const categories = await this.categoryService.findAll(skip, limitNumber);
 
             const transformedCategories = categories.map((category) => ({
                 ...category.toObject(),
@@ -82,7 +55,7 @@ export class CategoryController {
             return res.json(transformedCategories);
         } catch (error) {
             console.error('Error fetching categories:', error.message);
-            return res.status(500).json({ message: 'Internal server error' });
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -102,14 +75,14 @@ export class CategoryController {
             return res.json(transformedCategory);
         } catch (error) {
             console.error('Error fetching category:', error.message);
-            return res.status(500).json({ message: 'Internal server error' });
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() updateCategory: Partial<{ firstname: string; lastname: string; email: string; password: string; isActive: boolean }>,
+        @Body() updateCategory: Partial<Category>,
         @Res() res: Response,
     ): Promise<any> {
         try {
@@ -121,7 +94,7 @@ export class CategoryController {
             return res.json(updatedCategory);
         } catch (error) {
             console.error('Error updating category:', error.message);
-            return res.status(500).json({ message: 'Internal server error' });
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -136,7 +109,7 @@ export class CategoryController {
             return res.json({ message: 'Category deleted successfully' });
         } catch (error) {
             console.error('Error deleting category:', error.message);
-            return res.status(500).json({ message: 'Internal server error' });
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

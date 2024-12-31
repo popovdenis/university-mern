@@ -21,11 +21,8 @@ export class Category extends Document {
     @Prop({ required: false })
     path: string;
 
-    @Prop({ default: Date.now })
-    createdAt: Date;
-
-    @Prop({ default: Date.now })
-    updatedAt: Date;
+    @Prop({ required: true, default: true, index: true })
+    isActive: boolean;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

@@ -31,6 +31,8 @@ const CourseEdit = () => {
       image: '',
       isActive: true,
    });
+   const [categories, setCategories] = useState([]);
+   const [selectedCategories, setSelectedCategories] = useState([]);
 
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
@@ -52,15 +54,20 @@ const CourseEdit = () => {
             }
 
             setCourse(courseData);
-            if (courseData.attributes && courseData.attributes.length) {
-               setAttributes(courseData.attributes);
-            }
+            setAttributes(courseData.attributes || []);
+            setSelectedCategories(courseData.categories || []);
          } catch (error) {
             console.error('Error fetching course data:', error);
          }
       };
+      // TODO: call Category::fetchAll()
+      const fetchCategories = async () => {
+         const response = await axios.get(`http://localhost:5001/categories`);
+         setCategories(response.data);
+      }
 
       fetchCourse();
+      fetchCategories();
    }, [id]);
 
    const handleChange = (event) => {
@@ -73,6 +80,9 @@ const CourseEdit = () => {
    const handleImageUpload = (filePath) => {
       setCourse((prev) => ({ ...prev, image: filePath }));
       setImageExists(true);
+   };
+   const handleCategoryChange = (event) => {
+      setSelectedCategories(event.target.value);
    };
 
    const validate = () => {
@@ -99,6 +109,9 @@ const CourseEdit = () => {
       setLoading(true);
       try {
          await axios.put(`http://localhost:5001/courses/${id}`, course);
+         await axios.put(`http://localhost:5001/courses/${id}/categories`, {
+            categoryIds: setSelectedCategories,
+         });
          navigate('/courses');
       } catch (error) {
          console.error('Error updating course:', error);
@@ -132,6 +145,16 @@ const CourseEdit = () => {
                     multiline
                     rows={4}
                 />
+                <Select multiple
+                        value={selectedCategories}
+                        onChange={handleCategoryChange}
+                        renderValue={(selected) => selected.join(", ")}>
+                   {categories.map((category) => (
+                       <MenuItem key={category.id} value={category.id}>
+                          {category.title}
+                       </MenuItem>
+                   ))}
+                </Select>
                 <FormControl fullWidth margin="normal">
                    <InputLabel id="duration-label">Duration</InputLabel>
                    <Select

@@ -12,6 +12,13 @@ export class CourseService {
         return newCourse.save();
     }
 
+    async findByIdWithCategories(id: string): Promise<Course> {
+        return this.courseModel
+            .findById(id)
+            .populate('categories', 'title description path')
+            .exec();
+    }
+
     async findAll(skip: number, limit: number, sortField?: string, sortOrder?: 'asc' | 'desc'): Promise<Course[]> {
         const sort = {};
         if (sortField) {
@@ -35,15 +42,37 @@ export class CourseService {
         return this.courseModel.findById(id).exec();
     }
 
-    async findByEmail(email: string): Promise<Course | null> {
-        return this.courseModel.findOne({ email });
-    }
-
     async update(id: string, updateCourseDto: Partial<Course>): Promise<Course> {
         return this.courseModel.findByIdAndUpdate(id, updateCourseDto, { new: true }).exec();
     }
 
     async delete(id: string): Promise<Course> {
         return this.courseModel.findByIdAndDelete(id).exec();
+    }
+
+    async assignCategories(courseId: string, categoryIds: string[]): Promise<Course> {
+        return this.courseModel
+            .findByIdAndUpdate(
+                courseId,
+                { $addToSet: { categories: { $each: categoryIds } } },
+                { new: true },
+            )
+            .populate('categories')
+            .exec();
+    }
+
+    async removeCategory(courseId: string, categoryId: string): Promise<Course> {
+        return this.courseModel
+            .findByIdAndUpdate(
+                courseId,
+                { $pull: { categories: categoryId } },
+                { new: true },
+            )
+            .populate('categories')
+            .exec();
+    }
+
+    async findCoursesWithCategories(): Promise<Course[]> {
+        return this.courseModel.find().populate('categories').exec();
     }
 }

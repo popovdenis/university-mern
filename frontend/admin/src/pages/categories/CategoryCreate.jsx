@@ -1,16 +1,15 @@
-import React, { useState } from "react";
-import {Box, TextField, Button, Typography, FormControlLabel, Switch, MenuItem} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, TextField, Button, Typography, FormControlLabel, Switch, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {tokens} from "../../theme";
-import {useTheme} from "@mui/material/styles";
-import ImageUploader from "../../components/ImageUploader";
-import categories from "../categories/Categories";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
 
-function CreateCourse() {
+function CreateCategory() {
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
+   const [categories, setCategories] = useState([]); // Для хранения категорий
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
    const [errorMessage, setErrorMessage] = useState("");
@@ -22,15 +21,28 @@ function CreateCourse() {
       isActive: true,
    });
 
+   useEffect(() => {
+      const fetchCategories = async () => {
+         try {
+            const response = await axios.get("http://localhost:5001/categories"); // Замените на ваш API-эндпоинт
+            setCategories(response.data); // Устанавливаем данные категорий
+         } catch (error) {
+            console.error("Error fetching categories:", error);
+         }
+      };
+
+      fetchCategories();
+   }, []); // Запрос выполняется только один раз при загрузке компонента
+
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
-      setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value, }));
+      setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
    };
 
    const validate = () => {
       const newErrors = {};
       if (!formData.title.trim()) {
-         newErrors.firstname = "Title is required";
+         newErrors.title = "Title is required";
       }
 
       setErrors(newErrors);
@@ -108,7 +120,7 @@ function CreateCourse() {
                        select
                        fullWidth
                    >
-                      <MenuItem value="">Non (Root Category)</MenuItem>
+                      <MenuItem value="">None (Root Category)</MenuItem>
                       {categories.map((category) => (
                           <MenuItem key={category.id} value={category.id}>
                              {category.title}
@@ -118,26 +130,14 @@ function CreateCourse() {
                 </Box>
                 <Box>
                    <TextField
-                       fullWidth
-                       label="Password"
-                       name="password"
-                       type="password"
-                       value={formData.password}
+                       label="Position"
+                       name="position"
+                       type="number"
+                       value={formData.position}
                        onChange={handleChange}
-                       error={!!errors.password}
-                       helperText={errors.password}
-                   />
-                </Box>
-                <Box>
-                   <TextField
+                       error={!!errors.position}
+                       helperText={errors.position}
                        fullWidth
-                       label="Confirm Password"
-                       name="confirmPassword"
-                       type="password"
-                       value={formData.confirmPassword}
-                       onChange={handleChange}
-                       error={!!errors.confirmPassword}
-                       helperText={errors.confirmPassword}
                    />
                 </Box>
                 <Box gridColumn="span 2">
@@ -152,9 +152,6 @@ function CreateCourse() {
                        label="Active Status"
                    />
                 </Box>
-                {/*<Box gridColumn="span 2">*/}
-                {/*   <ImageUploader onUpload={handleImageUpload} />*/}
-                {/*</Box>*/}
              </Box>
              <Box mt="1.5rem" display="flex" gap={2}>
                 <Button
@@ -165,7 +162,7 @@ function CreateCourse() {
                 >
                    {loading ? "Saving..." : "Save"}
                 </Button>
-                <Button variant="contained" onClick={() => navigate("/customers")} className="cancel-button">
+                <Button variant="contained" onClick={() => navigate("/categories")} className="cancel-button">
                    Cancel
                 </Button>
              </Box>
@@ -174,4 +171,4 @@ function CreateCourse() {
    );
 }
 
-export default CreateCourse;
+export default CreateCategory;

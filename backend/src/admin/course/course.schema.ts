@@ -15,8 +15,8 @@ export class Course extends Document {
     @Prop({ required: false })
     level: string;
 
-    @Prop({ required: true, ref: 'Category', index: true })
-    category: mongoose.Schema.Types.ObjectId;
+    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Category', index: true })
+    category: mongoose.Schema.Types.ObjectId[];
 
     @Prop({ required: false, ref: 'Customer', index: true })
     instructor: mongoose.Schema.Types.ObjectId;

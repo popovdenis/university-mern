@@ -6,6 +6,10 @@ import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar"
 import Dashboard from "./scenes/dashboard";
 
+import Categories from "./pages/categories/Categories";
+import CategoryEdit from "./pages/categories/CategoryEdit";
+import CreateCategory from "./pages/categories/CategoryCreate";
+
 import Customers from "./pages/customers/Customers";
 import CustomerEdit from "./pages/customers/CustomerEdit";
 import CreateCustomer from "./pages/customers/CustomerCreate";
@@ -38,6 +42,10 @@ const [theme, colorMode] = useMode();
               <Topbar />
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/categories/edit/:id" element={<CategoryEdit />} />
+                <Route path="/categories/create" element={<CreateCategory />} />
 
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/customers/edit/:id" element={<CustomerEdit />} />
