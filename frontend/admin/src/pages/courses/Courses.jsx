@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Box, useTheme, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
@@ -12,16 +12,18 @@ function Courses() {
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
 
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 10,
     });
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [rowCount, setRowCount] = useState(0);
-
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedEntity, setSelectedEntity] = useState(null);
+    const [sortModel, setSortModel] = useState([
+        { field: "id", sort: "asc" },
+    ]);
 
     const handleDeleteClick = (entity) => {
         setSelectedEntity(entity);
@@ -44,13 +46,15 @@ function Courses() {
         }
     };
 
-    const fetchCourses = async (page, pageSize) => {
+    const fetchCourses = useCallback (async (page, pageSize) => {
         setLoading(true);
         try {
             const response = await axios.get("http://localhost:5001/courses", {
                 params: {
                     _page: page + 1,
                     _limit: pageSize,
+                    _sort: sortModel[0]?.field,
+                    _order: sortModel[0].sort
                 },
             });
             setCourses(response.data);
@@ -60,15 +64,11 @@ function Courses() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [sortModel]);
 
     useEffect(() => {
         fetchCourses(paginationModel.page, paginationModel.pageSize);
-    }, [paginationModel]);
-
-    const handlePaginationChange = (model) => {
-        setPaginationModel(model);
-    };
+    }, [paginationModel, sortModel]);
 
     const columns = [
         {
@@ -99,7 +99,7 @@ function Courses() {
                     display="flex"
                 >
                     <Typography color={colors.grey[100]}>
-                        {row.level.charAt(0).toUpperCase() + row.level.slice(1)}
+                        {row.level?.charAt(0).toUpperCase() + row.level?.slice(1)}
                     </Typography>
                 </Box>
             )
@@ -181,7 +181,9 @@ function Courses() {
                     loading={loading}
                     paginationMode="server"
                     paginationModel={paginationModel}
-                    onPaginationModelChange={handlePaginationChange}
+                    onPaginationModelChange={setPaginationModel}
+                    sortModel={sortModel}
+                    onSortModelChange={(model) => setSortModel(model)}
                     rowCount={rowCount}
                     rowsPerPageOptions={[10, 25, 50, 100]}
                     pagination

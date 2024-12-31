@@ -5,34 +5,45 @@ import { Course } from './course.schema';
 
 @Injectable()
 export class CourseService {
-    constructor(@InjectModel(Course.name) private readonly customerModel: Model<Course>) {}
+    constructor(@InjectModel(Course.name) private readonly courseModel: Model<Course>) {}
 
     async create(createCourseDto: any): Promise<Course> {
-        const newCustomer = new this.customerModel(createCourseDto);
-        return newCustomer.save();
+        const newCourse = new this.courseModel(createCourseDto);
+        return newCourse.save();
     }
 
-    async findAll(skip: number, limit: number): Promise<Course[]> {
-        return this.customerModel.find().skip(skip).limit(limit).exec();
+    async findAll(skip: number, limit: number, sortField?: string, sortOrder?: 'asc' | 'desc'): Promise<Course[]> {
+        const sort = {};
+        if (sortField) {
+            sortField = sortField === 'id' ? '_id' : sortField;
+            sort[sortField] = sortOrder === 'asc' ? 1 : -1;
+        }
+
+        return this.courseModel
+            .find()
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
+            .exec();
     }
 
     async count(): Promise<number> {
-        return this.customerModel.countDocuments().exec();
+        return this.courseModel.countDocuments().exec();
     }
 
     async findById(id: string): Promise<Course> {
-        return this.customerModel.findById(id).exec();
+        return this.courseModel.findById(id).exec();
     }
 
     async findByEmail(email: string): Promise<Course | null> {
-        return this.customerModel.findOne({ email });
+        return this.courseModel.findOne({ email });
     }
 
     async update(id: string, updateCourseDto: Partial<Course>): Promise<Course> {
-        return this.customerModel.findByIdAndUpdate(id, updateCourseDto, { new: true }).exec();
+        return this.courseModel.findByIdAndUpdate(id, updateCourseDto, { new: true }).exec();
     }
 
     async delete(id: string): Promise<Course> {
-        return this.customerModel.findByIdAndDelete(id).exec();
+        return this.courseModel.findByIdAndDelete(id).exec();
     }
 }

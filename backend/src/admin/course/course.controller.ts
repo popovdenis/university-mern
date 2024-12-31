@@ -37,28 +37,33 @@ export class CourseController {
     }
 
     @Get()
-    async findAll(@Res() res: Response, @Query('_page') page: string, @Query('_limit') limit: string): Promise<any> {
+    async findAll(
+        @Res() res: Response,
+        @Query('_page') page: string,
+        @Query('_limit') limit: string,
+        @Query('_sort') sortField?: string,
+        @Query('_order') sortOrder?: 'asc' | 'desc',
+    ): Promise<any> {
         try {
             const pageNumber = parseInt(page, 10) || 1;
             const limitNumber = parseInt(limit, 10) || 10;
             const skip = (pageNumber - 1) * limitNumber;
 
-            const totalCustomers = await this.courseService.count();
+            const totalCourses = await this.courseService.count();
 
-            const customers = await this.courseService.findAll(skip, limitNumber);
+            const courses = await this.courseService.findAll(skip, limitNumber, sortField, sortOrder);
 
-            const transformedCustomers = customers.map((customer) => ({
-                ...customer.toObject(),
-                id: customer._id,
+            const transformedCourses = courses.map((course) => ({
+                ...course.toObject(),
+                id: course._id,
             }));
 
-            // Установка заголовков для клиента
-            res.setHeader('X-Total-Count', totalCustomers.toString());
+            res.setHeader('X-Total-Count', totalCourses.toString());
             res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
 
-            return res.json(transformedCustomers);
+            return res.json(transformedCourses);
         } catch (error) {
-            console.error('Error fetching customers:', error.message);
+            console.error('Error fetching courses:', error.message);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
