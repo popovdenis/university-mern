@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
    Box,
    MenuItem,
@@ -9,13 +9,13 @@ import {
    Typography,
    FormControl,
    InputLabel,
-   Select,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { tokens } from '../../theme';
-import { useParams, useNavigate } from 'react-router-dom';
-import ImageUploader from '../../components/ImageUploader';
-import axios from 'axios';
+   Select
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { tokens } from "../../theme";
+import { useParams, useNavigate } from "react-router-dom";
+import ImageUploader from "../../components/ImageUploader";
+import axios from "axios";
 
 const CourseEdit = () => {
    const { id } = useParams();
@@ -27,20 +27,34 @@ const CourseEdit = () => {
       title: '',
       description: '',
       duration: '',
-      level: '',
+      level:  '',
       image: '',
       isActive: true,
    });
 
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
+   const [imageExists, setImageExists] = useState(false);
 
    useEffect(() => {
       const fetchCourse = async () => {
          try {
             const response = await axios.get(`http://localhost:5001/courses/${id}`);
-            setCourse(response.data);
-            setAttributes(response.data.attributes || []);
+            const courseData = response.data;
+
+            if (courseData.image) {
+               try {
+                  await axios.head(`http://localhost:5001${courseData.image}`);
+                  setImageExists(true);
+               } catch {
+                  setImageExists(false);
+               }
+            }
+
+            setCourse(courseData);
+            if (courseData.attributes && courseData.attributes.length) {
+               setAttributes(courseData.attributes);
+            }
          } catch (error) {
             console.error('Error fetching course data:', error);
          }
@@ -56,9 +70,9 @@ const CourseEdit = () => {
          [name]: type === 'checkbox' ? checked : value,
       }));
    };
-
    const handleImageUpload = (filePath) => {
       setCourse((prev) => ({ ...prev, image: filePath }));
+      setImageExists(true);
    };
 
    const validate = () => {
@@ -166,6 +180,22 @@ const CourseEdit = () => {
                     }
                     label="Active"
                 />
+                <Box>
+                   {course.image && imageExists ? (
+                       <Box>
+                          <img
+                              src={`http://localhost:5001${course.image}`}
+                              alt="Uploaded Course"
+                              style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
+                          />
+                          <Typography mt={1} color="error">
+                             * Note: To replace this image, upload a new one.
+                          </Typography>
+                       </Box>
+                   ) : (
+                       <Typography color="error">Image not found on server.</Typography>
+                   )}
+                </Box>
                 <ImageUploader onUpload={handleImageUpload} />
              </Box>
              <Box mt="1.5rem" display="flex" gap={2}>
