@@ -69,6 +69,25 @@ export class AttributeController {
         }
     }
 
+    @Put(':id')
+    async update(
+        @Param('id') id: string,
+        @Body() updateAttributeDto: Partial<any>,
+        @Res() res: Response,
+    ): Promise<any> {
+        try {
+            const updatedEntity = await this.attributeService.update(id, updateAttributeDto);
+            if (!updatedEntity) {
+                return res.status(404).json({ message: 'Attribute is not found' });
+            }
+
+            return res.json(updatedEntity);
+        } catch (error) {
+            console.error('Error updating entity:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
     @Delete(':id')
     async delete(@Param('id') id: string, @Res() res: Response): Promise<any> {
         try {

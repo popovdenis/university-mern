@@ -88,7 +88,7 @@ export class CustomerController {
         try {
             const updatedCustomer = await this.customerService.update(id, updateCustomerDto);
             if (!updatedCustomer) {
-                return res.status(404).json({ message: 'Customer user not found' });
+                return res.status(404).json({ message: 'Customer is not found' });
             }
 
             return res.json(updatedCustomer);
