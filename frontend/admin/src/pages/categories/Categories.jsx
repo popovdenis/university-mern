@@ -16,7 +16,7 @@ function Categories() {
         page: 0,
         pageSize: 10,
     });
-    const [categories, setCategories] = useState([]);
+    const [entities, setEntities] = useState([]);
     const [loading, setLoading] = useState(false);
     const [rowCount, setRowCount] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
@@ -38,7 +38,7 @@ function Categories() {
     const handleConfirmDelete = async () => {
         try {
             await axios.delete(`http://localhost:5001/categories/${selectedEntity.id}`);
-            setCategories(categories.filter((entity) => entity.id !== selectedEntity.id));
+            setEntities(entities.filter((entity) => entity.id !== selectedEntity.id));
         } catch (error) {
             console.error(error);
         } finally {
@@ -46,7 +46,7 @@ function Categories() {
         }
     };
 
-    const fetchCategories = useCallback (async (page, pageSize) => {
+    const fetchEntities = useCallback (async (page, pageSize) => {
         setLoading(true);
         try {
             const response = await axios.get("http://localhost:5001/categories", {
@@ -57,7 +57,7 @@ function Categories() {
                     _order: sortModel[0].sort
                 },
             });
-            setCategories(response.data);
+            setEntities(response.data);
             setRowCount(parseInt(response.headers["x-total-count"]));
         } catch (error) {
             console.log("Error while fetching categories:", error);
@@ -67,7 +67,7 @@ function Categories() {
     }, [sortModel]);
 
     useEffect(() => {
-        fetchCategories(paginationModel.page, paginationModel.pageSize);
+        fetchEntities(paginationModel.page, paginationModel.pageSize);
     }, [paginationModel, sortModel]);
 
     const columns = [
@@ -149,11 +149,11 @@ function Categories() {
             <Box
                 margin="0.5rem 1rem"
                 m="2rem 0 0 0"
-                height={categories.length > 0 ? `${categories.length * 75, 64 * 16}px` : '300px'}
+                height={entities.length > 0 ? `${entities.length * 75}px ${64 * 16}px` : '300px'}
                 maxHeight="64vh"
             >
                 <DataGrid
-                    rows={categories}
+                    rows={entities}
                     columns={columns}
                     loading={loading}
                     paginationMode="server"

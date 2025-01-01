@@ -161,7 +161,7 @@ function Attributes() {
             <Box
                 margin="0.5rem 1rem"
                 m="2rem 0 0 0"
-                height={entities.length > 0 ? `${entities.length * 75, 64 * 16}px` : '300px'}
+                height={entities.length > 0 ? `${entities.length * 75}px ${64 * 16}px` : '300px'}
                 minHeight="300px"
                 maxHeight="64vh"
             >

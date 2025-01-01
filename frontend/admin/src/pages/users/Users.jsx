@@ -14,7 +14,7 @@ function Users() {
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
 
-    const [users, setUsers] = useState([]);
+    const [entities, setEntities] = useState([]);
     const [loading, setLoading] = useState(false);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -23,22 +23,22 @@ function Users() {
     const [rowCount, setRowCount] = useState(0);
 
     const [openDialog, setOpenDialog] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedEntity, setSelectedEntity] = useState(null);
 
-    const handleDeleteClick = (user) => {
-        setSelectedUser(user);
+    const handleDeleteClick = (entity) => {
+        setSelectedEntity(entity);
         setOpenDialog(true);
     };
 
     const handleCloseDialog = () => {
-        setSelectedUser(null);
+        setSelectedEntity(null);
         setOpenDialog(false);
     };
 
     const handleConfirmDelete = async () => {
         try {
-            await axios.delete(`http://localhost:5001/admin-users/${selectedUser.id}`);
-            setUsers(users.filter((user) => user.id !== selectedUser.id));
+            await axios.delete(`http://localhost:5001/admin-users/${selectedEntity.id}`);
+            setEntities(entities.filter((entity) => entity.id !== selectedEntity.id));
         } catch (error) {
             console.error(error);
         } finally {
@@ -46,7 +46,7 @@ function Users() {
         }
     };
 
-    const fetchUsers = async (page, pageSize) => {
+    const fetchEntities = async (page, pageSize) => {
         setLoading(true);
         try {
             const response = await axios.get("http://localhost:5001/admin-users", {
@@ -55,17 +55,17 @@ function Users() {
                     _limit: pageSize,
                 },
             });
-            setUsers(response.data);
+            setEntities(response.data);
             setRowCount(parseInt(response.headers["x-total-count"]));
         } catch (error) {
-            console.log("Error while fetching users:", error);
+            console.log("Error while fetching entities:", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchUsers(paginationModel.page, paginationModel.pageSize);
+        fetchEntities(paginationModel.page, paginationModel.pageSize);
     }, [paginationModel]);
 
     const handlePaginationChange = (model) => {
@@ -161,12 +161,12 @@ function Users() {
             <Box
                 margin="0.5rem 1rem"
                 m="2rem 0 0 0"
-                height={users.length > 0 ? `${users.length * 75, 64 * 16}px` : '300px'}
+                height={entities.length > 0 ? `${entities.length * 75}px ${64 * 16}px` : '300px'}
                 minHeight="300px"
                 maxHeight="64vh"
             >
                 <DataGrid
-                    rows={users}
+                    rows={entities}
                     columns={columns}
                     loading={loading}
                     paginationMode="server"
@@ -179,7 +179,7 @@ function Users() {
                 <ConfirmationDialog
                     open={openDialog}
                     title="Delete User"
-                    contentText={`Are you sure you want to delete user ${selectedUser?.firstname} ${selectedUser?.lastname}?`}
+                    contentText={`Are you sure you want to delete user ${selectedEntity?.firstname} ${selectedEntity?.lastname}?`}
                     onClose={handleCloseDialog}
                     onConfirm={handleConfirmDelete}
                     confirmText="Delete"
