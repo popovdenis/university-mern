@@ -23,6 +23,7 @@ import UserEdit from "./pages/users/UserEdit";
 import UserCreate from "./pages/users/UserCreate";
 
 import Attributes from "./pages/attributes/Attributes";
+import EditAttribute from "./pages/attributes/EditAttribute";
 
 import Invoices from "./scenes/Invoices";
 import Contact from "./scenes/Constact";
@@ -31,6 +32,7 @@ import Form from "./scenes/Form";
 import Line from "./scenes/Line";
 import Pie from "./scenes/Pie";
 import Faq from "./scenes/Faq";
+
 function App() {
 const [theme, colorMode] = useMode();
 
@@ -62,6 +64,7 @@ const [theme, colorMode] = useMode();
                 <Route path="/users/create" element={<UserCreate />} />
 
                 <Route path="/attributes" element={<Attributes />} />
+                <Route path="/attributes/edit/:id" element={<EditAttribute />} />
 
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/contact" element={<Contact />} />
