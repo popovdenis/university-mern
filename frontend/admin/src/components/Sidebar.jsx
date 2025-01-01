@@ -9,9 +9,10 @@ import {
    PieChartOutlineOutlined,
    TimelineOutlined,
    MenuOutlined,
-   AddCircleOutline,
    AdminPanelSettings,
    AdminPanelSettingsOutlined,
+   PersonAddAlt,
+   Extension
 } from "@mui/icons-material";
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
@@ -144,7 +145,7 @@ const Sidebar = () => {
                       <SidebarItem
                           title="New Customer"
                           to="/customers/create"
-                          icon={<AddCircleOutline />}
+                          icon={<PersonAddAlt />}
                           selected={selected}
                           setSelected={setSelected}
                           isCollapsed={isCollapsed}
@@ -209,21 +210,16 @@ const Sidebar = () => {
                    />
 
                    {/* System */}
-                   <Typography variant="h6" color={colors.grey[300]} sx={{ margin: "15px 0 5px 20px" }}>
-                      System
-                   </Typography>
-
-                   {/* Users */}
                    <SubMenu
-                       label={!isCollapsed && "Users"}
-                       title="Users"
+                       label={!isCollapsed && "System"}
+                       title="System"
                        icon={<AdminPanelSettings />}
                        style={{
                           color: colors.grey[100],
                        }}
                    >
                       <SidebarItem
-                          title="All Users"
+                          title="Users"
                           to="/users"
                           icon={<AdminPanelSettingsOutlined />}
                           selected={selected}
@@ -231,9 +227,9 @@ const Sidebar = () => {
                           isCollapsed={isCollapsed}
                       />
                       <SidebarItem
-                          title="New User"
-                          to="/users/create"
-                          icon={<AddCircleOutline />}
+                          title="Attributes"
+                          to="/attributes"
+                          icon={<Extension />}
                           selected={selected}
                           setSelected={setSelected}
                           isCollapsed={isCollapsed}

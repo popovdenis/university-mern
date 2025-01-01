@@ -22,6 +22,8 @@ import Users from "./pages/users/Users";
 import UserEdit from "./pages/users/UserEdit";
 import UserCreate from "./pages/users/UserCreate";
 
+import Attributes from "./pages/attributes/Attributes";
+
 import Invoices from "./scenes/Invoices";
 import Contact from "./scenes/Constact";
 import Bar from "./scenes/Bar";
@@ -58,6 +60,8 @@ const [theme, colorMode] = useMode();
                 <Route path="/users" element={<Users />} />
                 <Route path="/users/edit/:id" element={<UserEdit />} />
                 <Route path="/users/create" element={<UserCreate />} />
+
+                <Route path="/attributes" element={<Attributes />} />
 
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/contact" element={<Contact />} />
