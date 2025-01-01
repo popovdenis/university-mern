@@ -52,6 +52,10 @@ export class CategoryService {
         return this.categoryModel.findById(id).exec();
     }
 
+    async findByIds(ids: string[]): Promise<Category[]> {
+        return this.categoryModel.find({ _id: { $in: ids } }).exec();
+    }
+
     async findByEmail(email: string): Promise<Category | null> {
         return this.categoryModel.findOne({ email });
     }

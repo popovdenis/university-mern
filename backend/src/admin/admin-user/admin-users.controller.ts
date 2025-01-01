@@ -48,7 +48,6 @@ export class AdminUsersController {
                 id: customer._id,
             }));
 
-            // Установка заголовков для клиента
             res.setHeader('X-Total-Count', totalCustomers.toString());
             res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
 

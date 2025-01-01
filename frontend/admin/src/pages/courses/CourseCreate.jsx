@@ -1,20 +1,30 @@
-import React, { useState } from "react";
-import {Box, TextField, Button, Typography, FormControlLabel, Switch, MenuItem} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {
+   Box,
+   TextField,
+   Button,
+   Typography,
+   FormControlLabel,
+   Switch,
+   MenuItem,
+   FormControl,
+   InputLabel, Select
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {tokens} from "../../theme";
 import {useTheme} from "@mui/material/styles";
 import ImageUploader from "../../components/ImageUploader";
-import categories from "../categories/Categories";
+import { Autocomplete } from "@mui/material";
 
 function CreateCourse() {
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-   const [errors, setErrors] = useState({});
-   const [loading, setLoading] = useState(false);
-   const [errorMessage, setErrorMessage] = useState("");
-   const [formData, setFormData] = useState({
+   const [attributes, setAttributes] = useState([]);
+   const [categories] = useState([]);
+
+   const [course, setCourse] = useState({
       title: "",
       description: "",
       parentId: "",
@@ -22,19 +32,55 @@ function CreateCourse() {
       isActive: true,
    });
 
+   const [errors, setErrors] = useState({});
+   const [loading, setLoading] = useState(false);
+   const [imageExists, setImageExists] = useState(false);
+
+   useEffect(() => {
+      const fetchCourseAttributes = async () => {
+         try {
+            const response = await axios.get(`http://localhost:5001/attributes/course`);
+            setAttributes(response.data.attributes);
+         } catch (error) {
+            console.error(error.message || 'Failed to fetch attributes data', 'error');
+         } finally {
+            setLoading(false);
+         }
+      };
+      fetchCourseAttributes();
+   }, []);
+
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
-      setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value, }));
+      setCourse((prevCourse) => ({
+         ...prevCourse,
+         [name]: type === 'checkbox' ? checked : value,
+      }));
+   };
+   const handleCategoriesChange = (event, value) => {
+      setCourse((prevCourse) => ({
+         ...prevCourse,
+         categoryIds: value.map((category) => category.id),
+      }));
+   };
+   const handleImageUpload = (filePath) => {
+      setCourse((prev) => ({ ...prev, image: filePath }));
+      setImageExists(true);
    };
 
    const validate = () => {
       const newErrors = {};
-      if (!formData.title.trim()) {
-         newErrors.firstname = "Title is required";
+      if (!course.title.trim()) {
+         newErrors.title = 'Title is required';
+      }
+      if (!course.duration.trim()) {
+         newErrors.duration = 'Duration is required';
+      }
+      if (!course.level.trim()) {
+         newErrors.level = 'Level is required';
       }
 
       setErrors(newErrors);
-
       return Object.keys(newErrors).length === 0;
    };
 
@@ -45,116 +91,126 @@ function CreateCourse() {
 
       setLoading(true);
       try {
-         await axios.post("http://localhost:5001/categories", {
-            ...formData,
-            parentId: formData.parentId || null,
+         await axios.post(`http://localhost:5001/courses/`, {
+            ...course,
+            categories: course.categories?.map((cat) => cat.id) || [],
          });
-         navigate("/categories");
+         navigate('/courses');
       } catch (error) {
-         if (error.response && error.response.status === 400) {
-            setErrorMessage(error.response.data.message);
-         } else {
-            console.error("Unexpected error:", error);
-         }
+         console.error('Error while creating a course:', error);
       } finally {
          setLoading(false);
       }
    };
 
    return (
-       <Box m="2rem">
+       <Box m="1.5rem">
           <Typography variant="h4" color={colors.grey[100]} gutterBottom>
-             Create New Category
+             Create New Course
           </Typography>
-          {errorMessage && (
-              <Typography color="error" mb={2}>
-                 {errorMessage}
-              </Typography>
-          )}
           <form onSubmit={handleSubmit}>
              <Box display="grid" gap="1.5rem" gridTemplateColumns="1fr 1fr">
-                <Box>
-                   <TextField
-                       fullWidth
-                       label="Title *"
-                       name="title"
-                       value={formData.title}
-                       onChange={handleChange}
-                       error={!!errors.title}
-                       helperText={errors.title}
-                   />
-                </Box>
-                <Box>
-                   <TextField
-                       label="Description"
-                       name="description"
-                       value={formData.description}
-                       onChange={handleChange}
-                       error={!!errors.description}
-                       helperText={errors.description}
-                       fullWidth
-                       multiline
-                       rows={4}
-                   />
-                </Box>
+                <TextField
+                    fullWidth
+                    label="Title *"
+                    name="title"
+                    value={course.title}
+                    onChange={handleChange}
+                    error={!!errors.title}
+                    helperText={errors.title}
+                />
+                <TextField
+                    fullWidth
+                    label="Description"
+                    name="description"
+                    value={course.description}
+                    onChange={handleChange}
+                    multiline
+                    rows={4}
+                />
                 <Box gridColumn="span 2">
-                   <TextField
-                       label="Parent Category"
-                       name="parentId"
-                       value={formData.parentId}
+                   <Autocomplete
+                       multiple
+                       options={categories}
+                       getOptionLabel={(option) => option.title}
+                       value={categories.filter((cat) =>
+                           course.categoryIds.includes(cat.id)
+                       )}
+                       onChange={handleCategoriesChange}
+                       renderInput={(params) => (
+                           <TextField
+                               {...params}
+                               label="Categories"
+                               placeholder="Select categories"
+                           />
+                       )}
+                   />
+                </Box>
+                <FormControl fullWidth margin="normal">
+                   <InputLabel id="duration-label">Duration</InputLabel>
+                   <Select
+                       labelId="duration-label"
+                       name="duration"
+                       value={course.duration}
                        onChange={handleChange}
-                       error={!!errors.parentId}
-                       helperText={errors.parentId}
-                       select
-                       fullWidth
                    >
-                      <MenuItem value="">Non (Root Category)</MenuItem>
-                      {categories.map((category) => (
-                          <MenuItem key={category.id} value={category.id}>
-                             {category.title}
-                          </MenuItem>
-                      ))}
-                   </TextField>
-                </Box>
-                <Box>
-                   <TextField
-                       fullWidth
-                       label="Password"
-                       name="password"
-                       type="password"
-                       value={formData.password}
+                      {attributes.map(
+                          (attr) =>
+                              attr.attributeCode === 'duration' &&
+                              attr.options.map((opt, idx) => (
+                                  <MenuItem key={idx} value={opt}>
+                                     {opt}
+                                  </MenuItem>
+                              )),
+                      )}
+                   </Select>
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                   <InputLabel id="level-label">Level</InputLabel>
+                   <Select
+                       labelId="level-label"
+                       name="level"
+                       value={course.level}
                        onChange={handleChange}
-                       error={!!errors.password}
-                       helperText={errors.password}
-                   />
-                </Box>
+                   >
+                      {attributes.map(
+                          (attr) =>
+                              attr.attributeCode === 'level' &&
+                              attr.options.map((opt, idx) => (
+                                  <MenuItem key={idx} value={opt}>
+                                     {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                                  </MenuItem>
+                              )),
+                      )}
+                   </Select>
+                </FormControl>
+                <FormControlLabel
+                    control={
+                       <Switch
+                           name="isActive"
+                           checked={course.isActive}
+                           onChange={handleChange}
+                       />
+                    }
+                    label="Active"
+                />
                 <Box>
-                   <TextField
-                       fullWidth
-                       label="Confirm Password"
-                       name="confirmPassword"
-                       type="password"
-                       value={formData.confirmPassword}
-                       onChange={handleChange}
-                       error={!!errors.confirmPassword}
-                       helperText={errors.confirmPassword}
-                   />
-                </Box>
-                <Box gridColumn="span 2">
-                   <FormControlLabel
-                       control={
-                          <Switch
-                              name="isActive"
-                              checked={formData.isActive}
-                              onChange={handleChange}
+                   {course.image && imageExists ? (
+                       <Box>
+                          <img
+                              src={`http://localhost:5001${course.image}`}
+                              alt="Uploaded Course"
+                              style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
                           />
-                       }
-                       label="Active Status"
-                   />
+                          <Typography mt={1} color="error">
+                             * Note: To replace this image, upload a new one.
+                          </Typography>
+                       </Box>
+                   ) : (
+                       <Typography color="error">Image not found on server.</Typography>
+                   )}
                 </Box>
-                {/*<Box gridColumn="span 2">*/}
-                {/*   <ImageUploader onUpload={handleImageUpload} />*/}
-                {/*</Box>*/}
+                <ImageUploader onUpload={handleImageUpload} />
              </Box>
              <Box mt="1.5rem" display="flex" gap={2}>
                 <Button
@@ -165,7 +221,7 @@ function CreateCourse() {
                 >
                    {loading ? "Saving..." : "Save"}
                 </Button>
-                <Button variant="contained" onClick={() => navigate("/customers")} className="cancel-button">
+                <Button variant="contained" onClick={() => navigate("/courses")} className="cancel-button">
                    Cancel
                 </Button>
              </Box>

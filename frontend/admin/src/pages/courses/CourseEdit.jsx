@@ -11,6 +11,7 @@ import {
    InputLabel,
    Select
 } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { useParams, useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ const CourseEdit = () => {
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
    const [attributes, setAttributes] = useState([]);
+   const [categories, setCategories] = useState([]);
    const [course, setCourse] = useState({
       title: '',
       description: '',
@@ -30,9 +32,8 @@ const CourseEdit = () => {
       level:  '',
       image: '',
       isActive: true,
+      categoryIds: [],
    });
-   const [categories, setCategories] = useState([]);
-   const [selectedCategories, setSelectedCategories] = useState([]);
 
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
@@ -42,20 +43,22 @@ const CourseEdit = () => {
       const fetchCourse = async () => {
          try {
             const response = await axios.get(`http://localhost:5001/courses/${id}`);
-            const courseData = response.data;
+            setCourse({
+               ...response.data,
+               categoryIds: response.data.categories?.map((cat) => cat.id) || [],
+            });
+            if (response.data.attributes && response.data.attributes.length) {
+               setAttributes(response.data.attributes);
+            }
 
-            if (courseData.image) {
+            if (response.data.image) {
                try {
-                  await axios.head(`http://localhost:5001${courseData.image}`);
+                  await axios.head(`http://localhost:5001${response.image}`);
                   setImageExists(true);
                } catch {
                   setImageExists(false);
                }
             }
-
-            setCourse(courseData);
-            setAttributes(courseData.attributes || []);
-            setSelectedCategories(courseData.categories || []);
          } catch (error) {
             console.error('Error fetching course data:', error);
          }
@@ -81,8 +84,11 @@ const CourseEdit = () => {
       setCourse((prev) => ({ ...prev, image: filePath }));
       setImageExists(true);
    };
-   const handleCategoryChange = (event) => {
-      setSelectedCategories(event.target.value);
+   const handleCategoriesChange = (event, value) => {
+      setCourse((prevCourse) => ({
+         ...prevCourse,
+         categoryIds: value.map((category) => category.id),
+      }));
    };
 
    const validate = () => {
@@ -108,9 +114,9 @@ const CourseEdit = () => {
 
       setLoading(true);
       try {
-         await axios.put(`http://localhost:5001/courses/${id}`, course);
-         await axios.put(`http://localhost:5001/courses/${id}/categories`, {
-            categoryIds: setSelectedCategories,
+         await axios.put(`http://localhost:5001/courses/${id}`, {
+            ...course,
+            categories: course.categories?.map((cat) => cat.id) || [],
          });
          navigate('/courses');
       } catch (error) {
@@ -145,16 +151,24 @@ const CourseEdit = () => {
                     multiline
                     rows={4}
                 />
-                <Select multiple
-                        value={selectedCategories}
-                        onChange={handleCategoryChange}
-                        renderValue={(selected) => selected.join(", ")}>
-                   {categories.map((category) => (
-                       <MenuItem key={category.id} value={category.id}>
-                          {category.title}
-                       </MenuItem>
-                   ))}
-                </Select>
+                <Box gridColumn="span 2">
+                   <Autocomplete
+                       multiple
+                       options={categories}
+                       getOptionLabel={(option) => option.title}
+                       value={categories.filter((cat) =>
+                           course.categoryIds.includes(cat.id)
+                       )}
+                       onChange={handleCategoriesChange}
+                       renderInput={(params) => (
+                           <TextField
+                               {...params}
+                               label="Categories"
+                               placeholder="Select categories"
+                           />
+                       )}
+                   />
+                </Box>
                 <FormControl fullWidth margin="normal">
                    <InputLabel id="duration-label">Duration</InputLabel>
                    <Select

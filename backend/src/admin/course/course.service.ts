@@ -42,7 +42,7 @@ export class CourseService {
         return this.courseModel.findById(id).exec();
     }
 
-    async update(id: string, updateCourseDto: Partial<Course>): Promise<Course> {
+    async update(id: string, updateCourseDto: any): Promise<Course> {
         return this.courseModel.findByIdAndUpdate(id, updateCourseDto, { new: true }).exec();
     }
 

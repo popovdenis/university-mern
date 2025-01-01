@@ -135,10 +135,23 @@ export class CourseController {
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() updateCourse: Partial<{ firstname: string; lastname: string; email: string; password: string; isActive: boolean }>,
+        @Body() updateCourse: Partial<{
+            title: string;
+            description: string;
+            duration: string;
+            level: string;
+            isActive: boolean;
+            categories?: string[]
+        }>,
         @Res() res: Response,
     ): Promise<any> {
         try {
+            // if (updateCourse.categories && updateCourse.categories.length) {
+            //     const existingCategories = await this.categoryService.findByIds(updateCourse.categories);
+            //     if (existingCategories.length !== updateCourse.categories.length) {
+            //         return res.status(400).json({ message: 'Some categories are invalid or do not exist' })
+            //     }
+            // }
             const updatedCourse = await this.courseService.update(id, updateCourse);
             if (!updatedCourse) {
                 return res.status(404).json({ message: 'Course not found' });
