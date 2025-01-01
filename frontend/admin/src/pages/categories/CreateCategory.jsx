@@ -24,15 +24,15 @@ function CreateCategory() {
    useEffect(() => {
       const fetchCategories = async () => {
          try {
-            const response = await axios.get("http://localhost:5001/categories"); // Замените на ваш API-эндпоинт
-            setCategories(response.data); // Устанавливаем данные категорий
+            const response = await axios.get("http://localhost:5001/categories");
+            setCategories(response.data);
          } catch (error) {
             console.error("Error fetching categories:", error);
          }
       };
 
       fetchCategories();
-   }, []); // Запрос выполняется только один раз при загрузке компонента
+   }, []);
 
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;

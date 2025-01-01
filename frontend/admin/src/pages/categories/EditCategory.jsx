@@ -4,14 +4,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 function EditCategory() {
-   const { id } = useParams(); // Получаем ID категории из URL
+   const { id } = useParams();
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
 
-   const [categories, setCategories] = useState([]); // Для списка категорий
+   const [categories, setCategories] = useState([]);
    const [formData, setFormData] = useState({
       title: "",
       description: "",
@@ -23,15 +25,12 @@ function EditCategory() {
    const [loading, setLoading] = useState(false);
    const [errorMessage, setErrorMessage] = useState("");
 
-   // Загрузка данных категории и списка категорий
    useEffect(() => {
       const fetchCategoryAndParents = async () => {
          try {
-            // Получение текущей категории
             const categoryResponse = await axios.get(`http://localhost:5001/categories/${id}`);
             const categoryData = categoryResponse.data;
 
-            // Установка данных категории в форму
             setFormData({
                title: categoryData.title || "",
                description: categoryData.description || "",
@@ -40,7 +39,6 @@ function EditCategory() {
                isActive: categoryData.isActive !== undefined ? categoryData.isActive : true,
             });
 
-            // Загрузка всех доступных категорий
             const categoriesResponse = await axios.get("http://localhost:5001/categories");
             setCategories(categoriesResponse.data);
          } catch (error) {
@@ -54,6 +52,9 @@ function EditCategory() {
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
       setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+   };
+   const handleDescriptionChange = (value) => {
+      setFormData((prev) => ({ ...prev, description: value }));
    };
 
    const validate = () => {
@@ -91,7 +92,7 @@ function EditCategory() {
    };
 
    return (
-       <Box m="2rem">
+       <Box m="2rem" display="grid" gap="1.5rem">
           <Typography variant="h4" color={colors.grey[100]} gutterBottom>Edit Category</Typography>
           {errorMessage && (
               <Typography color="error" mb={2}>
@@ -111,17 +112,13 @@ function EditCategory() {
                        helperText={errors.title}
                    />
                 </Box>
-                <Box>
-                   <TextField
-                       label="Description"
-                       name="description"
-                       value={formData.description}
-                       onChange={handleChange}
-                       error={!!errors.description}
-                       helperText={errors.description}
-                       fullWidth
-                       multiline
-                       rows={4}
+                <Box gridColumn="span 2">
+                   <Typography variant="h6" gutterBottom>Description</Typography>
+                   <ReactQuill
+                      value={formData.description}
+                      onChange={handleDescriptionChange}
+                      theme="snow"
+                      style={{ height: "200px", width: "100%", position: "relative", display: "flex", flexDirection: "column" }}
                    />
                 </Box>
                 <Box gridColumn="span 2">
