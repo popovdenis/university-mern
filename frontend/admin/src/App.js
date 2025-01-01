@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar"
-import Dashboard from "./scenes/dashboard";
+import Dashboard from "./pages/dashboard";
 
 import Categories from "./pages/categories/Categories";
 import EditCategory from "./pages/categories/EditCategory";
