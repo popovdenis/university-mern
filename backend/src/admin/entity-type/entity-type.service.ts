@@ -33,6 +33,10 @@ export class EntityTypeService {
         return this.entityTypeModel.findById(id).exec();
     }
 
+    async findByCode(entityTypeCode: string): Promise<EntityType> {
+        return this.entityTypeModel.findOne({ entityTypeCode }).exec();
+    }
+
     async update(id: string, updateEntityDto: Partial<EntityType>): Promise<EntityType> {
         return this.entityTypeModel.findByIdAndUpdate(id, updateEntityDto, { new: true }).exec();
     }

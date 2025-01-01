@@ -5,10 +5,7 @@ import { EntityTypeService } from "../entity-type/entity-type.service";
 
 @Controller('attributes')
 export class AttributeController {
-    constructor(
-        private readonly attributeService: AttributeService,
-        private readonly entityTypeService: EntityTypeService,
-    ) {}
+    constructor(private readonly attributeService: AttributeService) {}
 
     @Post()
     async create(
@@ -43,16 +40,16 @@ export class AttributeController {
             const limitNumber = parseInt(limit, 10) || 10;
             const skip = (pageNumber - 1) * limitNumber;
 
-            const totalCustomers = await this.attributeService.count();
+            const totalEntities = await this.attributeService.count();
 
             const entities = await this.attributeService.findAll(skip, limitNumber);
 
-            const transformedEntities = entities.map((customer) => ({
-                ...customer.toObject(),
-                id: customer._id,
+            const transformedEntities = entities.map((entity) => ({
+                ...entity.toObject(),
+                id: entity._id,
             }));
 
-            res.setHeader('X-Total-Count', totalCustomers.toString());
+            res.setHeader('X-Total-Count', totalEntities.toString());
             res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
 
             return res.json(transformedEntities);
@@ -89,8 +86,7 @@ export class AttributeController {
 
             const transformedEntity = {
                 ...entity.toObject(),
-                id: entity._id,
-                entityTypes: await this.entityTypeService.findAll()
+                id: entity._id
             };
 
             return res.json(transformedEntity);

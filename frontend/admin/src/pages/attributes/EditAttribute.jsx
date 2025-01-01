@@ -34,18 +34,27 @@ const EditAttribute = () => {
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
+      const fetchEntityTypes = async () => {
+         setLoading(true);
+         try {
+            const response = await axios.get("http://localhost:5001/entity-types");
+            setEntityTypes(response.data);
+         } catch (error) {
+            console.log("Error while fetching entity types:", error);
+         } finally {
+            setLoading(false);
+         }
+      };
       const fetchEntity = async () => {
          try {
             const response = await axios.get(`http://localhost:5001/attributes/${id}`);
             setEntity(response.data);
-            if (response.data.entityTypes && response.data.entityTypes.length) {
-               setEntityTypes(response.data.entityTypes);
-            }
          } catch (error) {
             console.error("Error fetching attribute data:", error);
          }
       };
 
+      fetchEntityTypes();
       fetchEntity();
    }, [id]);
 
