@@ -7,8 +7,8 @@ import Sidebar from "./components/Sidebar"
 import Dashboard from "./scenes/dashboard";
 
 import Categories from "./pages/categories/Categories";
-import CategoryEdit from "./pages/categories/CategoryEdit";
-import CreateCategory from "./pages/categories/CategoryCreate";
+import EditCategory from "./pages/categories/EditCategory";
+import CreateCategory from "./pages/categories/CreateCategory";
 
 import Customers from "./pages/customers/Customers";
 import CustomerEdit from "./pages/customers/CustomerEdit";
@@ -44,7 +44,7 @@ const [theme, colorMode] = useMode();
                 <Route path="/" element={<Dashboard />} />
 
                 <Route path="/categories" element={<Categories />} />
-                <Route path="/categories/edit/:id" element={<CategoryEdit />} />
+                <Route path="/categories/edit/:id" element={<EditCategory />} />
                 <Route path="/categories/create" element={<CreateCategory />} />
 
                 <Route path="/customers" element={<Customers />} />

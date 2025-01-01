@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Box, TextField, Button, Typography, FormControlLabel, Switch, MenuItem } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 
-function CreateCategory() {
+function EditCategory() {
+   const { id } = useParams(); // Получаем ID категории из URL
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-   const [categories, setCategories] = useState([]); // Для хранения категорий
-   const [errors, setErrors] = useState({});
-   const [loading, setLoading] = useState(false);
-   const [errorMessage, setErrorMessage] = useState("");
+
+   const [categories, setCategories] = useState([]); // Для списка категорий
    const [formData, setFormData] = useState({
       title: "",
       description: "",
@@ -20,19 +19,37 @@ function CreateCategory() {
       position: 0,
       isActive: true,
    });
+   const [errors, setErrors] = useState({});
+   const [loading, setLoading] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
 
+   // Загрузка данных категории и списка категорий
    useEffect(() => {
-      const fetchCategories = async () => {
+      const fetchCategoryAndParents = async () => {
          try {
-            const response = await axios.get("http://localhost:5001/categories"); // Замените на ваш API-эндпоинт
-            setCategories(response.data); // Устанавливаем данные категорий
+            // Получение текущей категории
+            const categoryResponse = await axios.get(`http://localhost:5001/categories/${id}`);
+            const categoryData = categoryResponse.data;
+
+            // Установка данных категории в форму
+            setFormData({
+               title: categoryData.title || "",
+               description: categoryData.description || "",
+               parentId: categoryData.parentId || "",
+               position: categoryData.position || 0,
+               isActive: categoryData.isActive !== undefined ? categoryData.isActive : true,
+            });
+
+            // Загрузка всех доступных категорий
+            const categoriesResponse = await axios.get("http://localhost:5001/categories");
+            setCategories(categoriesResponse.data);
          } catch (error) {
-            console.error("Error fetching categories:", error);
+            console.error("Error fetching category or categories:", error);
          }
       };
 
-      fetchCategories();
-   }, []); // Запрос выполняется только один раз при загрузке компонента
+      fetchCategoryAndParents();
+   }, [id]);
 
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
@@ -57,7 +74,7 @@ function CreateCategory() {
 
       setLoading(true);
       try {
-         await axios.post("http://localhost:5001/categories", {
+         await axios.put(`http://localhost:5001/categories/${id}`, {
             ...formData,
             parentId: formData.parentId || null,
          });
@@ -75,9 +92,7 @@ function CreateCategory() {
 
    return (
        <Box m="2rem">
-          <Typography variant="h4" color={colors.grey[100]} gutterBottom>
-             Create New Category
-          </Typography>
+          <Typography variant="h4" color={colors.grey[100]} gutterBottom>Edit Category</Typography>
           {errorMessage && (
               <Typography color="error" mb={2}>
                  {errorMessage}
@@ -121,7 +136,7 @@ function CreateCategory() {
                        fullWidth
                    >
                       <MenuItem value="">None (Root Category)</MenuItem>
-                      {categories.map((category) => (
+                      {categories.filter((category) => category.id !== id).map((category) => (
                           <MenuItem key={category.id} value={category.id}>
                              {category.title}
                           </MenuItem>
@@ -171,4 +186,4 @@ function CreateCategory() {
    );
 }
 
-export default CreateCategory;
+export default EditCategory;

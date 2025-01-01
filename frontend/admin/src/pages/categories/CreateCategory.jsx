@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import {Box, TextField, Button, Typography, FormControlLabel, Switch, MenuItem} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, TextField, Button, Typography, FormControlLabel, Switch, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {tokens} from "../../theme";
-import {useTheme} from "@mui/material/styles";
-import categories from "../categories/Categories";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
 
-function CategoryEdit() {
+function CreateCategory() {
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
+   const [categories, setCategories] = useState([]);
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
    const [errorMessage, setErrorMessage] = useState("");
@@ -21,15 +21,28 @@ function CategoryEdit() {
       isActive: true,
    });
 
+   useEffect(() => {
+      const fetchCategories = async () => {
+         try {
+            const response = await axios.get("http://localhost:5001/categories"); // Замените на ваш API-эндпоинт
+            setCategories(response.data); // Устанавливаем данные категорий
+         } catch (error) {
+            console.error("Error fetching categories:", error);
+         }
+      };
+
+      fetchCategories();
+   }, []); // Запрос выполняется только один раз при загрузке компонента
+
    const handleChange = (event) => {
       const { name, value, type, checked } = event.target;
-      setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value, }));
+      setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
    };
 
    const validate = () => {
       const newErrors = {};
       if (!formData.title.trim()) {
-         newErrors.firstname = "Title is required";
+         newErrors.title = "Title is required";
       }
 
       setErrors(newErrors);
@@ -107,7 +120,7 @@ function CategoryEdit() {
                        select
                        fullWidth
                    >
-                      <MenuItem value="">Non (Root Category)</MenuItem>
+                      <MenuItem value="">None (Root Category)</MenuItem>
                       {categories.map((category) => (
                           <MenuItem key={category.id} value={category.id}>
                              {category.title}
@@ -119,7 +132,7 @@ function CategoryEdit() {
                    <TextField
                        label="Position"
                        name="position"
-                       type="position"
+                       type="number"
                        value={formData.position}
                        onChange={handleChange}
                        error={!!errors.position}
@@ -158,4 +171,4 @@ function CategoryEdit() {
    );
 }
 
-export default CategoryEdit;
+export default CreateCategory;
