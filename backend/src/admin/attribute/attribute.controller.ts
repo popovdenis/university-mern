@@ -1,10 +1,40 @@
 import {Response} from "express";
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, Res} from '@nestjs/common';
 import {AttributeService} from "./attribute.service";
+import { EntityTypeService } from "../entity-type/entity-type.service";
 
 @Controller('attributes')
 export class AttributeController {
-    constructor(private readonly attributeService: AttributeService) {}
+    constructor(
+        private readonly attributeService: AttributeService,
+        private readonly entityTypeService: EntityTypeService,
+    ) {}
+
+    @Post()
+    async create(
+        @Body() createAttributeDto: { attributeCode: string; label: string; options: string; entityType: string },
+        @Res() res: Response,
+    ): Promise<any> {
+        try {
+            const existingEntity = await this.attributeService.findByCode(createAttributeDto.attributeCode);
+            if (existingEntity) {
+                return res.status(400).json({ message: 'The attribute with this code already exists' });
+            }
+
+            const newEntity = await this.attributeService.create(createAttributeDto);
+
+            const transformedEntity = {
+                ...newEntity.toObject(),
+                id: newEntity._id,
+            };
+            delete transformedEntity._id;
+
+            return res.status(201).json(transformedEntity);
+        } catch (error) {
+            console.error('Error while creating attribute:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 
     @Get()
     async findAll(@Res() res: Response, @Query('_page') page: string, @Query('_limit') limit: string): Promise<any> {
@@ -60,6 +90,7 @@ export class AttributeController {
             const transformedEntity = {
                 ...entity.toObject(),
                 id: entity._id,
+                entityTypes: await this.entityTypeService.findAll()
             };
 
             return res.json(transformedEntity);

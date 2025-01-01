@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
    Box,
-   Button,
    TextField,
-   Switch,
-   FormControlLabel,
+   Button,
    Typography,
-   FormControl,
+   FormControlLabel,
+   Switch,
    InputLabel,
    Select,
-   MenuItem
+   MenuItem, FormControl
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { tokens } from "../../theme";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {tokens} from "../../theme";
+import {useTheme} from "@mui/material/styles";
 
-const EditAttribute = () => {
-   const { id } = useParams();
+function CreateAttribute() {
    const navigate = useNavigate();
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-   const [entityTypes, setEntityTypes] = useState([]);
+   const [errors, setErrors] = useState({});
+   const [loading, setLoading] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
    const [entity, setEntity] = useState({
       attributeCode: '',
       label: '',
@@ -30,36 +30,8 @@ const EditAttribute = () => {
       isRequired: false,
    });
 
-   const [errors, setErrors] = useState({});
-   const [loading, setLoading] = useState(false);
-
-   useEffect(() => {
-      const fetchEntity = async () => {
-         try {
-            const response = await axios.get(`http://localhost:5001/attributes/${id}`);
-            setEntity(response.data);
-            if (response.data.entityTypes && response.data.entityTypes.length) {
-               setEntityTypes(response.data.entityTypes);
-            }
-         } catch (error) {
-            console.error("Error fetching attribute data:", error);
-         }
-      };
-
-      fetchEntity();
-   }, [id]);
-
-   const handleChange = (e) => {
-      const { name, value, type, checked } = e.target;
-
-      if (name === "entityType") {
-         setEntity((prev) => ({
-            ...prev,
-            entityType: value,
-         }));
-         return;
-      }
-
+   const handleChange = (event) => {
+      const { name, value, type, checked } = event.target;
       setEntity((prev) => ({
          ...prev,
          [name]: type === "checkbox" ? checked : value,
@@ -69,15 +41,14 @@ const EditAttribute = () => {
    const validate = () => {
       const newErrors = {};
       if (!entity.attributeCode.trim()) {
-         newErrors.attributeCode = "Attribute code is required";
+         newErrors.firstname = "Attribute Code is required";
       }
       if (!entity.label.trim()) {
-         newErrors.label = "Label is required";
+         newErrors.lastname = "Label is required";
       }
-      if (!entity.entityType.trim()) {
-         newErrors.entityType = "Entity Type is required";
-      }
+
       setErrors(newErrors);
+
       return Object.keys(newErrors).length === 0;
    };
 
@@ -87,28 +58,30 @@ const EditAttribute = () => {
       if (!validate()) return;
 
       setLoading(true);
-
-      const updatedEntity = {
-         ...entity,
-         options: typeof entity.options === 'string'
-             ? entity.options.split(',').map(option => option.trim())
-             : entity.options,
-      };
       try {
-         await axios.put(`http://localhost:5001/attributes/${id}`, updatedEntity);
+         await axios.post("http://localhost:5001/attributes", entity);
          navigate("/attributes");
       } catch (error) {
-         console.error("Error updating attribute:", error);
+         if (error.response && error.response.status === 400) {
+            setErrorMessage(error.response.data.message);
+         } else {
+            console.error("Unexpected error:", error);
+         }
       } finally {
          setLoading(false);
       }
    };
 
    return (
-       <Box m="1.5rem">
-          <Typography m="1.5rem 0" variant="h4" color={colors.grey[100]} gutterBottom>
-             Edit Attribute
+       <Box m="2rem">
+          <Typography variant="h4" color={colors.grey[100]} gutterBottom>
+             Create New Attribute
           </Typography>
+          {errorMessage && (
+              <Typography color="error" mb={2}>
+                 {errorMessage}
+              </Typography>
+          )}
           <form onSubmit={handleSubmit}>
              <Box display="grid" gap="1.5rem" gridTemplateColumns="1fr 1fr">
                 <TextField
@@ -139,17 +112,22 @@ const EditAttribute = () => {
                     rows={4}
                 />
                 <FormControl fullWidth margin="normal">
-                   <InputLabel id="entity-type-label">Entity Type</InputLabel>
+                   <InputLabel id="duration-label">Entity Type</InputLabel>
                    <Select
-                       labelId="entity-type-label"
+                       labelId="duration-label"
                        name="entityType"
-                       value={entity.entityType || ""}
+                       value={entity.entityType}
                        onChange={handleChange}
                    >
-                      <MenuItem value="">Select Entity Type</MenuItem>
-                      {entityTypes.map((entityType, index) => (
-                          <MenuItem key={index} value={entityType._id}>{entityType.entityTypeCode}</MenuItem>
-                      ))}
+                      {/*{attributes.map(*/}
+                      {/*    (attr) =>*/}
+                      {/*        attr.attributeCode === 'duration' &&*/}
+                      {/*        attr.options.map((opt, idx) => (*/}
+                      {/*            <MenuItem key={idx} value={opt}>*/}
+                      {/*               {opt}*/}
+                      {/*            </MenuItem>*/}
+                      {/*        )),*/}
+                      {/*)}*/}
                    </Select>
                 </FormControl>
                 <FormControlLabel
@@ -179,6 +157,6 @@ const EditAttribute = () => {
           </form>
        </Box>
    );
-};
+}
 
-export default EditAttribute;
+export default CreateAttribute;

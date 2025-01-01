@@ -50,6 +50,10 @@ export class AttributeService {
         return this.attributeModel.findById(id).exec();
     }
 
+    async findByCode(attributeCode: string): Promise<Attribute> {
+        return this.attributeModel.findOne({ attributeCode }).exec();
+    }
+
     async update(id: string, updateCourseDto: Partial<Attribute>): Promise<Attribute> {
         return this.attributeModel.findByIdAndUpdate(id, updateCourseDto, { new: true }).exec();
     }

@@ -24,6 +24,7 @@ import UserCreate from "./pages/users/UserCreate";
 
 import Attributes from "./pages/attributes/Attributes";
 import EditAttribute from "./pages/attributes/EditAttribute";
+import CreateAttribute from "./pages/attributes/CreateAttribute";
 
 import Invoices from "./scenes/Invoices";
 import Contact from "./scenes/Constact";
@@ -65,6 +66,7 @@ const [theme, colorMode] = useMode();
 
                 <Route path="/attributes" element={<Attributes />} />
                 <Route path="/attributes/edit/:id" element={<EditAttribute />} />
+                <Route path="/attributes/create" element={<CreateAttribute />} />
 
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/contact" element={<Contact />} />

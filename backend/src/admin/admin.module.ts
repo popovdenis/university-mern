@@ -4,8 +4,16 @@ import { CustomerModule } from './customer/customer.module';
 import { CourseModule } from './course/course.module';
 import { AttributeModule } from './attribute/attribute.module';
 import { CategoryModule } from './category/category.module';
+import { EntityTypeModule } from './entity-type/entity-type.module';
 
 @Module({
-  imports: [AdminUsersModule, CustomerModule, CourseModule, AttributeModule, CategoryModule],
+  imports: [
+      AdminUsersModule,
+      CustomerModule,
+      CourseModule,
+      AttributeModule,
+      CategoryModule,
+      EntityTypeModule,
+  ],
 })
 export class AdminModule {}
