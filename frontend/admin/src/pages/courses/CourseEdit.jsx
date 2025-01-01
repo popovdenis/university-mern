@@ -32,7 +32,7 @@ const CourseEdit = () => {
       level:  '',
       image: '',
       isActive: true,
-      categoryIds: [],
+      categories: [],
    });
 
    const [errors, setErrors] = useState({});
@@ -43,10 +43,7 @@ const CourseEdit = () => {
       const fetchCourse = async () => {
          try {
             const response = await axios.get(`http://localhost:5001/courses/${id}`);
-            setCourse({
-               ...response.data,
-               categoryIds: response.data.categories?.map((cat) => cat.id) || [],
-            });
+            setCourse(response.data);
             if (response.data.attributes && response.data.attributes.length) {
                setAttributes(response.data.attributes);
             }
@@ -63,7 +60,6 @@ const CourseEdit = () => {
             console.error('Error fetching course data:', error);
          }
       };
-      // TODO: call Category::fetchAll()
       const fetchCategories = async () => {
          const response = await axios.get(`http://localhost:5001/categories`);
          setCategories(response.data);
@@ -87,7 +83,7 @@ const CourseEdit = () => {
    const handleCategoriesChange = (event, value) => {
       setCourse((prevCourse) => ({
          ...prevCourse,
-         categoryIds: value.map((category) => category.id),
+         categories: value.map((category) => category.id),
       }));
    };
 
@@ -114,10 +110,7 @@ const CourseEdit = () => {
 
       setLoading(true);
       try {
-         await axios.put(`http://localhost:5001/courses/${id}`, {
-            ...course,
-            categories: course.categories?.map((cat) => cat.id) || [],
-         });
+         await axios.put(`http://localhost:5001/courses/${id}`, course);
          navigate('/courses');
       } catch (error) {
          console.error('Error updating course:', error);
@@ -156,8 +149,11 @@ const CourseEdit = () => {
                        multiple
                        options={categories}
                        getOptionLabel={(option) => option.title}
+                       isOptionEqualToValue={(option, value) => option._id === value._id}
                        value={categories.filter((cat) =>
-                           course.categoryIds.includes(cat.id)
+                           course.categories.some((category) =>
+                               typeof category === 'object' ? category._id === cat._id : category === cat._id
+                           )
                        )}
                        onChange={handleCategoriesChange}
                        renderInput={(params) => (

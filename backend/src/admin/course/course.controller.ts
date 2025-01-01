@@ -111,19 +111,12 @@ export class CourseController {
                 return res.status(404).json({ message: 'Course not found' });
             }
 
-            const allCategories = await this.categoryService.findAll();
-
             const transformedCourse = {
                 ...course.toObject(),
                 id: course._id,
                 attributes: await this.attributeService.findCourseAttributes(),
-                categories: allCategories.map((category) => ({
-                    id: category._id,
-                    title: category.title,
-                    description: category.description,
-                    path: category.path,
-                }))
             };
+            delete transformedCourse._id;
 
             return res.json(transformedCourse);
         } catch (error) {

@@ -60,7 +60,7 @@ function CreateCourse() {
    const handleCategoriesChange = (event, value) => {
       setCourse((prevCourse) => ({
          ...prevCourse,
-         categoryIds: value.map((category) => category.id),
+         categories: value.map((category) => category.id),
       }));
    };
    const handleImageUpload = (filePath) => {
@@ -91,10 +91,7 @@ function CreateCourse() {
 
       setLoading(true);
       try {
-         await axios.post(`http://localhost:5001/courses/`, {
-            ...course,
-            categories: course.categories?.map((cat) => cat.id) || [],
-         });
+         await axios.post(`http://localhost:5001/courses/`, course);
          navigate('/courses');
       } catch (error) {
          console.error('Error while creating a course:', error);
