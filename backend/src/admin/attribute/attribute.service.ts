@@ -13,8 +13,20 @@ export class AttributeService {
         return newCustomer.save();
     }
 
-    async findAll(skip: number, limit: number): Promise<Attribute[]> {
-        return this.attributeModel.find().skip(skip).limit(limit).exec();
+    async findAll(skip: number, limit: number, sortField?: string, sortOrder?: 'asc' | 'desc'): Promise<Attribute[]> {
+        const sort = {};
+        if (sortField) {
+            sortField = sortField === 'id' ? '_id' : sortField;
+            sort[sortField] = sortOrder === 'asc' ? 1 : -1;
+        }
+
+        return this.attributeModel
+            .find()
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
+            .populate('entityType', 'entityTypeCode')
+            .exec();
     }
 
     async findCourseAttributes(): Promise<Course[]> {

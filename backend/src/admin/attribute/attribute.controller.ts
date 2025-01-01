@@ -1,7 +1,6 @@
 import {Response} from "express";
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, Res} from '@nestjs/common';
 import {AttributeService} from "./attribute.service";
-import { EntityTypeService } from "../entity-type/entity-type.service";
 
 @Controller('attributes')
 export class AttributeController {
@@ -34,7 +33,13 @@ export class AttributeController {
     }
 
     @Get()
-    async findAll(@Res() res: Response, @Query('_page') page: string, @Query('_limit') limit: string): Promise<any> {
+    async findAll(
+        @Res() res: Response,
+        @Query('_page') page: string,
+        @Query('_limit') limit: string,
+        @Query('_sort') sortField?: string,
+        @Query('_order') sortOrder?: 'asc' | 'desc',
+    ): Promise<any> {
         try {
             const pageNumber = parseInt(page, 10) || 1;
             const limitNumber = parseInt(limit, 10) || 10;
@@ -42,7 +47,7 @@ export class AttributeController {
 
             const totalEntities = await this.attributeService.count();
 
-            const entities = await this.attributeService.findAll(skip, limitNumber);
+            const entities = await this.attributeService.findAll(skip, limitNumber, sortField, sortOrder);
 
             const transformedEntities = entities.map((entity) => ({
                 ...entity.toObject(),

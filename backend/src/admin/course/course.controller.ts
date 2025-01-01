@@ -146,12 +146,6 @@ export class CourseController {
         @Res() res: Response,
     ): Promise<any> {
         try {
-            // if (updateCourse.categories && updateCourse.categories.length) {
-            //     const existingCategories = await this.categoryService.findByIds(updateCourse.categories);
-            //     if (existingCategories.length !== updateCourse.categories.length) {
-            //         return res.status(400).json({ message: 'Some categories are invalid or do not exist' })
-            //     }
-            // }
             const updatedCourse = await this.courseService.update(id, updateCourse);
             if (!updatedCourse) {
                 return res.status(404).json({ message: 'Course not found' });

@@ -92,6 +92,20 @@ function Attributes() {
             field: "entityType",
             headerName: "Entity Type",
             flex: 1,
+            renderCell: ({ row }) => (
+                <Box
+                    width="100%"
+                    m="10px 0"
+                    p="0.2rem"
+                    display="flex"
+                    alignItems="center"
+                    borderRadius="5px"
+                >
+                    <Typography sx={{ color: row.entityType ? "inherit" : "red" }}>
+                        {row.entityType?.entityTypeCode || "No Type"}
+                    </Typography>
+                </Box>
+            ),
         },
         {
             field: "isRequired",
