@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
    Box,
    TextField,
@@ -21,7 +21,8 @@ function CreateAttribute() {
    const colors = tokens(theme.palette.mode);
    const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false);
-   const [errorMessage, setErrorMessage] = useState("");
+   const [errorMessage, setErrorMessage] = useState('');
+   const [entityTypes, setEntityTypes] = useState([]);
    const [entity, setEntity] = useState({
       attributeCode: '',
       label: '',
@@ -30,13 +31,38 @@ function CreateAttribute() {
       isRequired: false,
    });
 
-   const handleChange = (event) => {
-      const { name, value, type, checked } = event.target;
+   useEffect(() => {
+      const fetchEntityTypes = async () => {
+         setLoading(true);
+         try {
+            const response = await axios.get("http://localhost:5001/entity-types");
+            setEntityTypes(response.data);
+         } catch (error) {
+            console.log("Error while fetching entity types:", error);
+         } finally {
+            setLoading(false);
+         }
+      };
+
+      fetchEntityTypes();
+   }, []);
+
+   const handleChange = (e) => {
+      const { name, value, type, checked } = e.target;
+
+      if (name === "entityType") {
+         setEntity((prev) => ({
+            ...prev,
+            entityType: value,
+         }));
+         return;
+      }
+
       setEntity((prev) => ({
          ...prev,
          [name]: type === "checkbox" ? checked : value,
       }));
-   };
+   }
 
    const validate = () => {
       const newErrors = {};
@@ -112,22 +138,16 @@ function CreateAttribute() {
                     rows={4}
                 />
                 <FormControl fullWidth margin="normal">
-                   <InputLabel id="duration-label">Entity Type</InputLabel>
+                   <InputLabel id="entity-type-label">Entity Type</InputLabel>
                    <Select
-                       labelId="duration-label"
+                       labelId="entity-type-label"
                        name="entityType"
-                       value={entity.entityType}
+                       value={entity.entityType || ""}
                        onChange={handleChange}
                    >
-                      {/*{attributes.map(*/}
-                      {/*    (attr) =>*/}
-                      {/*        attr.attributeCode === 'duration' &&*/}
-                      {/*        attr.options.map((opt, idx) => (*/}
-                      {/*            <MenuItem key={idx} value={opt}>*/}
-                      {/*               {opt}*/}
-                      {/*            </MenuItem>*/}
-                      {/*        )),*/}
-                      {/*)}*/}
+                      {entityTypes.map((entityType, index) => (
+                          <MenuItem key={index} value={entityType._id}>{entityType.entityTypeCode}</MenuItem>
+                      ))}
                    </Select>
                 </FormControl>
                 <FormControlLabel

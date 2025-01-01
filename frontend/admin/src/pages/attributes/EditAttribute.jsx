@@ -155,7 +155,6 @@ const EditAttribute = () => {
                        value={entity.entityType || ""}
                        onChange={handleChange}
                    >
-                      <MenuItem value="">Select Entity Type</MenuItem>
                       {entityTypes.map((entityType, index) => (
                           <MenuItem key={index} value={entityType._id}>{entityType.entityTypeCode}</MenuItem>
                       ))}
