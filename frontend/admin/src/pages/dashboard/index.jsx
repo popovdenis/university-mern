@@ -7,12 +7,14 @@ import {
    PersonAdd,
    Traffic
 } from "@mui/icons-material";
+
 import { mockTransactions } from "../../data/mockData";
 import Header from "../../components/Header";
 import ProgressCircle from "../../components/ProgressCircle";
 import StatBox from "../../components/StatBox";
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
+import SubscribersPerCourseBarChart from "../../components/charts/SubscribersPerCourseBarChart";
 import { tokens } from "../../theme";
 
 function Dashboard() {
@@ -261,6 +263,24 @@ function Dashboard() {
                    <BarChart isDashboard={true}/>
                 </Box>
              </Box>
+
+             <Box
+                 gridColumn="span 4"
+                 gridRow="span 2"
+                 backgroundColor={colors.primary[400]}
+             >
+                <Typography
+                    variant="h5"
+                    fontWeight="600"
+                    sx={{padding: "30px 30px 0 30px"}}
+                >
+                   Subscribers per Courses
+                </Typography>
+                <Box height="250px" mt="-20px">
+                   <SubscribersPerCourseBarChart />
+                </Box>
+             </Box>
+
           </Box>
        </Box>
    );

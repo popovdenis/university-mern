@@ -3,9 +3,11 @@ import { useTheme } from "@mui/material";
 import { ResponsiveLine } from "@nivo/line";
 import { mockLineData as data } from "../data/mockData";
 import { tokens } from "../theme";
+
 function LineChart() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <ResponsiveLine
       theme={{

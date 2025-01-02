@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Attribute } from './attribute.schema';
-import {Course} from "../course/course.schema";
+import { Course } from "../course/course.schema";
 
 @Injectable()
 export class AttributeService {

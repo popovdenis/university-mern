@@ -1,6 +1,6 @@
-import {Response} from "express";
-import {Body, Controller, Delete, Get, Param, Post, Put, Query, Res} from '@nestjs/common';
-import {AttributeService} from "./attribute.service";
+import { Response } from "express";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { AttributeService } from "./attribute.service";
 
 @Controller('attributes')
 export class AttributeController {

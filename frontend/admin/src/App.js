@@ -48,6 +48,8 @@ const [theme, colorMode] = useMode();
               <Routes>
                 <Route path="/" element={<Dashboard />} />
 
+                <Route path="/reports/enrollments" element={<Dashboard />} />
+
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/edit/:id" element={<EditCategory />} />
                 <Route path="/categories/create" element={<CreateCategory />} />
