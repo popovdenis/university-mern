@@ -81,7 +81,11 @@ const Filters = ({ entityType, onApplyFilters }) => {
 
    // Применение фильтров в блоке фильтров
    const handleApplyFilters = () => {
-      onApplyFilters(filterValues); // Применение фильтров
+      // Убираем пустые значения
+      const nonEmptyFilters = Object.fromEntries(
+          Object.entries(filterValues).filter(([_, value]) => value !== "")
+      );
+      onApplyFilters(nonEmptyFilters); // Применяем только непустые значения
    };
 
    // Закрытие попапа без применения фильтров
