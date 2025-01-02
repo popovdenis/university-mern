@@ -36,6 +36,7 @@ function Dashboard() {
                 </Button>
              </Box>
           </Box>
+
           {/* Progress bars */}
           <Box
               display="grid"
@@ -63,6 +64,7 @@ function Dashboard() {
                     }
                 />
              </Box>
+
              <Box
                  gridColumn="span 3"
                  backgroundColor={colors.primary[400]}
@@ -76,12 +78,11 @@ function Dashboard() {
                     progress="0.50"
                     increase="+21%"
                     icon={
-                       <PointOfSaleIcon
-                           sx={{color: colors.greenAccent[600], fontSize: "26px"}}
-                       />
+                       <PointOfSaleIcon sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
                     }
                 />
              </Box>
+
              <Box
                  gridColumn="span 3"
                  backgroundColor={colors.primary[400]}
@@ -95,12 +96,11 @@ function Dashboard() {
                     progress="0.30"
                     increase="+5%"
                     icon={
-                       <PersonAddIcon
-                           sx={{color: colors.greenAccent[600], fontSize: "26px"}}
-                       />
+                       <PersonAddIcon sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
                     }
                 />
              </Box>
+
              <Box
                  gridColumn="span 3"
                  backgroundColor={colors.primary[400]}
@@ -114,12 +114,11 @@ function Dashboard() {
                     progress="0.80"
                     increase="+43%"
                     icon={
-                       <TrafficIcon
-                           sx={{color: colors.greenAccent[600], fontSize: "26px"}}
-                       />
+                       <TrafficIcon sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
                     }
                 />
              </Box>
+
              {/* second row */}
              <Box
                  gridColumn="span 8"
@@ -152,9 +151,7 @@ function Dashboard() {
                    </Box>
                    <Box>
                       <IconButton>
-                         <DownloadOutlinedIcon
-                             sx={{fontSize: "26px", color: colors.greenAccent[500]}}
-                         />
+                         <DownloadOutlinedIcon sx={{fontSize: "26px", color: colors.greenAccent[500]}} />
                       </IconButton>
                    </Box>
                 </Box>
@@ -162,6 +159,7 @@ function Dashboard() {
                    <LineChart isDashboard={true}/>
                 </Box>
              </Box>
+
              {/* transactions */}
              <Box
                  gridColumn="span 4"
@@ -183,6 +181,7 @@ function Dashboard() {
                       Recent Transactions
                    </Typography>
                 </Box>
+
                 {mockTransactions.map((transaction, i) => (
                     <Box
                         key={`${transaction.txId}-${i}`}
@@ -215,6 +214,7 @@ function Dashboard() {
                     </Box>
                 ))}
              </Box>
+
              {/* third row */}
              <Box
                  gridColumn="span 4"
@@ -242,6 +242,7 @@ function Dashboard() {
                    <Typography>Includes extra misc expenditures and costs</Typography>
                 </Box>
              </Box>
+
              <Box
                  gridColumn="span 4"
                  gridRow="span 2"
