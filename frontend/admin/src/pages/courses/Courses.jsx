@@ -178,7 +178,7 @@ function Courses() {
                 </Button>
             </Box>
             <Box m="1rem">
-                <Filter entityType={entityType} onFilterApply={handleFilterApply} />
+                <Filter entityType={entityType} onApplyFilters={handleFilterApply} />
             </Box>
             <Box
                 margin="0.5rem 1rem"

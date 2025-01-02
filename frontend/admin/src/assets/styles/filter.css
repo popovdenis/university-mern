@@ -2,14 +2,15 @@
     background-color: #1976d2;
     color: white;
     border-radius: 4px;
-    padding: 8px 16px;
+    padding: 6px 12px;
     font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s;
 }
 
 .filter-button:hover {
-    background-color: #115293;
+    background-color: #1565c0;
 }
 
 .filter-modal {
@@ -19,7 +20,7 @@
     transform: translate(-50%, -50%);
     width: 400px;
     background-color: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     border-radius: 8px;
     padding: 16px;
 }
@@ -55,36 +56,59 @@
 }
 
 .filter-cancel-button {
-    background-color: #f44336;
+    background-color: #f44336 !important;
     color: white;
+    font-weight: bold;
     padding: 6px 12px;
-    border: none;
+    text-transform: uppercase;
     border-radius: 4px;
-    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .filter-cancel-button:hover {
-    background-color: #d32f2f;
+    background-color: #d32f2f !important;
 }
 
 .filter-apply-button {
-    background-color: #4caf50;
+    background-color: #1976d2 !important;
     color: white;
+    font-weight: bold;
     padding: 6px 12px;
-    border: none;
+    text-transform: uppercase;
     border-radius: 4px;
-    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.filter-apply-button:hover {
-    background-color: #388e3c;
 }
 
 .filter-apply-button:disabled {
-    background-color: #a5d6a7;
+    background-color: #cfd8dc !important;
+    color: #90a4ae;
     cursor: not-allowed;
+}
+
+.filter-apply-button:hover {
+    background-color: #388e3c !important;
+}
+
+.filter-applied-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.filter-select {
+    width: 150px;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
 }
