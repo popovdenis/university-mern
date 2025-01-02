@@ -49,14 +49,38 @@
     margin-right: 8px;
 }
 
+.MuiCheckbox-root {
+    color: #37474f;
+}
+
+.filter-checkbox.MuiCheckbox-root.Mui-checked {
+    color: #1976d2;
+}
+
+.filter-checkbox.MuiCheckbox-root.Mui-checked:hover {
+    color: #145a8c;
+}
+
+.filter-checkbox.MuiFormControlLabel-label {
+    color: #37474f;
+    font-weight: bold;
+}
+
 .filter-modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
 }
 
-.filter-cancel-button {
-    background-color: #f44336 !important;
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 3px;
+    margin-top: 10px;
+}
+
+.dialog-actions .filter-cancel-button {
+    background-color: #f44336;
     color: white;
     font-weight: bold;
     padding: 6px 12px;
@@ -65,12 +89,12 @@
     cursor: pointer;
 }
 
-.filter-cancel-button:hover {
-    background-color: #d32f2f !important;
+.dialog-actions .filter-cancel-button:hover {
+    background-color: #d32f2f;
 }
 
-.filter-apply-button {
-    background-color: #1976d2 !important;
+.dialog-actions .filter-apply-button {
+    background-color: #1976d2;
     color: white;
     font-weight: bold;
     padding: 6px 12px;
@@ -79,14 +103,14 @@
     cursor: pointer;
 }
 
-.filter-apply-button:disabled {
-    background-color: #cfd8dc !important;
+.dialog-actions .filter-apply-button:disabled {
+    background-color: #cfd8dc;
     color: #90a4ae;
     cursor: not-allowed;
 }
 
-.filter-apply-button:hover {
-    background-color: #388e3c !important;
+.dialog-actions .filter-apply-button:hover {
+    background-color: #388e3c;
 }
 
 .filter-applied-area {
@@ -104,11 +128,4 @@
 
 .filter-select {
     width: 150px;
-}
-
-.dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
 }

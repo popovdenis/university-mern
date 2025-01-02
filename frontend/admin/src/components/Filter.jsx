@@ -117,17 +117,17 @@ const Filters = ({ entityType, onApplyFilters }) => {
                         key={attribute.attributeCode}
                         control={
                            <Checkbox
+                               className="filter-checkbox"
                                checked={selectedAttributes.includes(attribute.attributeCode)}
-                               onChange={() =>
-                                   handleAttributeToggle(attribute.attributeCode)
-                               }
+                               onChange={() => handleAttributeToggle(attribute.attributeCode)}
                            />
                         }
                         label={attribute.label}
+                        classes={{ label: 'filter-checkbox-label' }}
                     />
                 ))}
              </DialogContent>
-             <DialogActions>
+             <DialogActions className="dialog-actions">
                 <Button
                     className="filter-cancel-button"
                     onClick={handleClose}
