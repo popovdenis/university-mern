@@ -21,7 +21,6 @@ const Filters = ({ entityType, onApplyFilters }) => {
    const [selectedAttributes, setSelectedAttributes] = useState([]);
    const [filterValues, setFilterValues] = useState({});
    const [isResetEnabled, setIsResetEnabled] = useState(false);
-   const [isApplyEnabled, setIsApplyEnabled] = useState(false);
 
    // Подгрузка атрибутов
    useEffect(() => {
@@ -57,23 +56,22 @@ const Filters = ({ entityType, onApplyFilters }) => {
             });
          }
 
-         // Проверяем, нужно ли активировать кнопки
-         checkButtonStates(updatedSelected, filterValues);
-
          return updatedSelected;
       });
    };
 
    // Обработка изменения значений фильтров
    const handleFilterChange = (attributeCode, value) => {
-      const updatedValues = {
+      const updatedFilterValues = {
          ...filterValues,
          [attributeCode]: value,
       };
-      setFilterValues(updatedValues);
 
-      // Проверяем, нужно ли активировать кнопки
-      checkButtonStates(selectedAttributes, updatedValues);
+      setFilterValues(updatedFilterValues);
+
+      // Проверяем, если хотя бы один фильтр имеет значение, активируем Reset
+      const hasFilters = Object.values(updatedFilterValues).some((val) => val);
+      setIsResetEnabled(hasFilters);
    };
 
    // Очистка всех фильтров
@@ -84,7 +82,6 @@ const Filters = ({ entityType, onApplyFilters }) => {
       });
       setFilterValues(resetValues);
       setIsResetEnabled(false);
-      setIsApplyEnabled(false);
    };
 
    // Применение фильтров в блоке фильтров
@@ -95,13 +92,6 @@ const Filters = ({ entityType, onApplyFilters }) => {
    // Закрытие попапа без применения фильтров
    const handlePopupApply = () => {
       handleClose();
-   };
-
-   // Проверка состояний кнопок Reset и Apply
-   const checkButtonStates = (selected, values) => {
-      const hasNonEmptyValues = Object.values(values).some((val) => val !== "");
-      setIsResetEnabled(hasNonEmptyValues || selected.length > 0);
-      setIsApplyEnabled(hasNonEmptyValues);
    };
 
    return (
@@ -154,7 +144,8 @@ const Filters = ({ entityType, onApplyFilters }) => {
                  <Button
                      className="filter-apply-button"
                      onClick={handleApplyFilters}
-                     disabled={!isApplyEnabled}
+                     disabled={selectedAttributes.length === 0 ||
+                              Object.values(filterValues).every((value) => value === "")}
                  >
                     Apply
                  </Button>
