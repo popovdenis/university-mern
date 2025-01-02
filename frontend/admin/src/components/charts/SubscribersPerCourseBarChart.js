@@ -9,14 +9,10 @@ const SubscribersPerCourseBarChart = () => {
    const colors = tokens(theme.palette.mode);
 
    const [enrollments, setEnrollments] = useState([]);
-   const [keys, setKeys] = useState([]);
 
    const fetchCourses = useCallback(async () => {
       try {
          const response = await axios.get("http://localhost:5001/reports/enrollments");
-
-         const uniqueKeys = [...new Set(response.data.map((entity) => entity._id))];
-         setKeys(uniqueKeys);
 
          const colorsSchema = {
             "expert": "hsl(25, 70%, 50%)",
