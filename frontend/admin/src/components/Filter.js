@@ -10,6 +10,7 @@ import {
    ListItem,
 } from "@mui/material";
 import axios from "axios";
+import '../assets/styles/filter.css'
 
 const Filter = ({ entityType, onFilterApply }) => {
    const [open, setOpen] = useState(false);
@@ -50,7 +51,6 @@ const Filter = ({ entityType, onFilterApply }) => {
    return (
        <Box display="flex" justifyContent="flex-end" mb={2}>
           <Button
-              variant="contained"
               className="filter-button"
               onClick={handleOpen}
           >
@@ -58,25 +58,13 @@ const Filter = ({ entityType, onFilterApply }) => {
           </Button>
 
           <Modal open={open} onClose={handleClose}>
-             <Box
-                 sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: 400,
-                    bgcolor: "background.paper",
-                    boxShadow: 24,
-                    p: 4,
-                    borderRadius: "8px",
-                 }}
-             >
-                <Typography variant="h6" mb={2}>
+             <Box className="filter-modal">
+                <Typography className="filter-modal-title">
                    Select Filters
                 </Typography>
-                <List>
+                <List className="filter-list">
                    {attributes.map((attr) => (
-                       <ListItem key={attr.attributeCode} disablePadding>
+                       <ListItem key={attr.attributeCode} className="filter-list-item">
                           <FormControlLabel
                               control={
                                  <Checkbox
@@ -84,6 +72,7 @@ const Filter = ({ entityType, onFilterApply }) => {
                                      onChange={() =>
                                          handleCheckboxChange(attr.attributeCode)
                                      }
+                                     className="filter-checkbox"
                                  />
                               }
                               label={attr.label}
@@ -91,10 +80,15 @@ const Filter = ({ entityType, onFilterApply }) => {
                        </ListItem>
                    ))}
                 </List>
-                <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
-                   <Button onClick={handleClose}>Cancel</Button>
+                <Box className="filter-modal-actions">
                    <Button
-                       variant="contained"
+                       className="filter-cancel-button"
+                       onClick={handleClose}
+                   >
+                      Cancel
+                   </Button>
+                   <Button
+                       className="filter-apply-button"
                        onClick={handleApply}
                        disabled={selectedAttributes.length === 0}
                    >
