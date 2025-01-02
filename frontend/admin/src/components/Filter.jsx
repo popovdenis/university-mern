@@ -20,6 +20,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
    const [attributes, setAttributes] = useState([]);
    const [selectedAttributes, setSelectedAttributes] = useState([]);
    const [filterValues, setFilterValues] = useState({});
+   const [isDirty, setIsDirty] = useState(false);
 
    // Подгрузка атрибутов
    useEffect(() => {
@@ -47,6 +48,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
               ? prevSelected.filter((code) => code !== attributeCode)
               : [...prevSelected, attributeCode]
       );
+      setIsDirty(true); // Отмечаем изменения
    };
 
    // Обработка изменения значений фильтров
@@ -55,18 +57,23 @@ const Filters = ({ entityType, onApplyFilters }) => {
          ...prevValues,
          [attributeCode]: value,
       }));
+      setIsDirty(true); // Отмечаем изменения
    };
 
    // Очистка всех фильтров
    const handleReset = () => {
-      setFilterValues({});
-      setSelectedAttributes([]);
+      const resetFilters = {};
+      selectedAttributes.forEach((attr) => {
+         resetFilters[attr] = ""; // Сбрасываем значения фильтров до дефолтных
+      });
+      setFilterValues(resetFilters); // Оставляем сами фильтры
+      setIsDirty(false); // Сбрасываем флаг изменений
    };
 
    // Применение фильтров
    const handleApply = () => {
       onApplyFilters(filterValues);
-      handleClose();
+      setIsDirty(false); // Сбрасываем флаг изменений после применения
    };
 
    return (
@@ -108,6 +115,28 @@ const Filters = ({ entityType, onApplyFilters }) => {
              </Button>
           </Box>
 
+          {/* Кнопки Apply и Reset */}
+          {selectedAttributes.length > 0 && (
+              <Box mt={2} display="flex" justifyContent="flex-end" gap="1rem">
+                 <Button
+                     className="filter-reset-button"
+                     variant="outlined"
+                     onClick={handleReset}
+                     disabled={!isDirty}
+                 >
+                    Reset
+                 </Button>
+                 <Button
+                     className="filter-apply-button"
+                     variant="contained"
+                     onClick={handleApply}
+                     disabled={!isDirty}
+                 >
+                    Apply
+                 </Button>
+              </Box>
+          )}
+
           {/* Диалоговое окно */}
           <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
              <DialogTitle>Select Filters</DialogTitle>
@@ -119,11 +148,13 @@ const Filters = ({ entityType, onApplyFilters }) => {
                            <Checkbox
                                className="filter-checkbox"
                                checked={selectedAttributes.includes(attribute.attributeCode)}
-                               onChange={() => handleAttributeToggle(attribute.attributeCode)}
+                               onChange={() =>
+                                   handleAttributeToggle(attribute.attributeCode)
+                               }
                            />
                         }
                         label={attribute.label}
-                        classes={{ label: 'filter-checkbox-label' }}
+                        classes={{ label: "filter-checkbox-label" }}
                     />
                 ))}
              </DialogContent>
@@ -136,7 +167,10 @@ const Filters = ({ entityType, onApplyFilters }) => {
                 </Button>
                 <Button
                     className="filter-apply-button"
-                    onClick={handleApply}
+                    onClick={() => {
+                       handleApply();
+                       handleClose();
+                    }}
                     disabled={selectedAttributes.length === 0}
                 >
                    Apply

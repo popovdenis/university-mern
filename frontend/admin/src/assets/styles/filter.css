@@ -129,3 +129,21 @@
 .filter-select {
     width: 150px;
 }
+
+.filter-reset-button {
+    border-color: #888 !important;
+    color: #000 !important;
+}
+
+.filter-reset-button:hover {
+    background-color: #f1f1f1 !important;
+}
+
+.filter-apply-button {
+    background-color: #90c7aa !important;
+    color: white !important;
+}
+
+.filter-apply-button:hover {
+    background-color: #7eaf97 !important;
+}
