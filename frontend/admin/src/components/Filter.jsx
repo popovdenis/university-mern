@@ -13,7 +13,7 @@ import {
    MenuItem,
 } from "@mui/material";
 import axios from "axios";
-import '../assets/styles/filter.css'
+import "../assets/styles/filter.css";
 
 const Filters = ({ entityType, onApplyFilters }) => {
    const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +51,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
          // Удаляем значение из filterValues, если фильтр снят
          if (!updatedSelected.includes(attributeCode)) {
             setFilterValues((prevValues) => {
-               const { [attributeCode]: _, ...rest } = prevValues; // Удаление атрибута
+               const { [attributeCode]: _, ...rest } = prevValues;
                return rest;
             });
          }
@@ -79,11 +79,14 @@ const Filters = ({ entityType, onApplyFilters }) => {
       setIsResetEnabled(false);
    };
 
-   // Применение фильтров
-   const handleApply = () => {
-      onApplyFilters(filterValues);
-      setIsResetEnabled(true);
-      handleClose();
+   // Применение фильтров в блоке фильтров
+   const handleApplyFilters = () => {
+      onApplyFilters(filterValues); // Применение фильтров
+   };
+
+   // Закрытие попапа без применения фильтров
+   const handlePopupApply = () => {
+      handleClose(); // Просто закрываем попап
    };
 
    return (
@@ -135,8 +138,8 @@ const Filters = ({ entityType, onApplyFilters }) => {
                  </Button>
                  <Button
                      className="filter-apply-button"
-                     onClick={handleApply}
-                     disabled={selectedAttributes.length === 0}
+                     onClick={handleApplyFilters}
+                     disabled={Object.keys(filterValues).length === 0}
                  >
                     Apply
                  </Button>
@@ -171,7 +174,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
                 </Button>
                 <Button
                     className="filter-apply-button"
-                    onClick={handleApply}
+                    onClick={handlePopupApply}
                     disabled={selectedAttributes.length === 0}
                 >
                    Apply
