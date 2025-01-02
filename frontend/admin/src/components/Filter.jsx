@@ -22,13 +22,10 @@ const Filters = ({ entityType, onApplyFilters }) => {
    const [filterValues, setFilterValues] = useState({});
    const [isResetEnabled, setIsResetEnabled] = useState(false);
 
-   // Подгрузка атрибутов
    useEffect(() => {
       const fetchAttributes = async () => {
          try {
-            const response = await axios.get(
-                `http://localhost:5001/attributes?entityType=${entityType}`
-            );
+            const response = await axios.get(`http://localhost:5001/attributes?entityType=${entityType}`);
             setAttributes(response.data);
          } catch (error) {
             console.error("Error fetching attributes:", error);
@@ -37,18 +34,18 @@ const Filters = ({ entityType, onApplyFilters }) => {
       fetchAttributes();
    }, [entityType]);
 
-   // Открытие и закрытие попапа
+   // Open and close the popup
    const handleOpen = () => setIsOpen(true);
    const handleClose = () => setIsOpen(false);
 
-   // Обработка изменения чекбоксов
+   // Handle the checkboxes
    const handleAttributeToggle = (attributeCode) => {
       setSelectedAttributes((prevSelected) => {
          const updatedSelected = prevSelected.includes(attributeCode)
              ? prevSelected.filter((code) => code !== attributeCode)
              : [...prevSelected, attributeCode];
 
-         // Удаляем значение из filterValues, если фильтр снят
+         // Delete the values from filterValues if a filter is deactivated
          if (!updatedSelected.includes(attributeCode)) {
             setFilterValues((prevValues) => {
                const { [attributeCode]: _, ...rest } = prevValues;
@@ -60,7 +57,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
       });
    };
 
-   // Обработка изменения значений фильтров
+   // Handle the changes of filters
    const handleFilterChange = (attributeCode, value) => {
       const updatedFilterValues = {
          ...filterValues,
@@ -69,12 +66,12 @@ const Filters = ({ entityType, onApplyFilters }) => {
 
       setFilterValues(updatedFilterValues);
 
-      // Проверяем, если хотя бы один фильтр имеет значение, активируем Reset
+      // If at least one filter has a value, then activate Reset
       const hasFilters = Object.values(updatedFilterValues).some((val) => val);
       setIsResetEnabled(hasFilters);
    };
 
-   // Очистка всех фильтров
+   // Clear filters
    const handleReset = () => {
       const resetValues = {};
       selectedAttributes.forEach((attr) => {
@@ -84,12 +81,17 @@ const Filters = ({ entityType, onApplyFilters }) => {
       setIsResetEnabled(false);
    };
 
-   // Применение фильтров в блоке фильтров
+   // Apply filters in the block
    const handleApplyFilters = () => {
-      onApplyFilters(filterValues);
+      const activeFilters = Object.entries(filterValues).reduce((acc, [key, value]) => {
+         if (value) acc[key] = value;
+         return acc;
+      }, {});
+
+      onApplyFilters(activeFilters);
    };
 
-   // Закрытие попапа без применения фильтров
+   // Close the popup
    const handlePopupApply = () => {
       handleClose();
    };
@@ -131,7 +133,6 @@ const Filters = ({ entityType, onApplyFilters }) => {
              </Button>
           </Box>
 
-          {/* Кнопки Apply и Reset */}
           {selectedAttributes.length > 0 && (
               <Box display="flex" justifyContent="flex-end" mt={1}>
                  <Button
@@ -152,7 +153,6 @@ const Filters = ({ entityType, onApplyFilters }) => {
               </Box>
           )}
 
-          {/* Диалоговое окно */}
           <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
              <DialogTitle>Select Filters</DialogTitle>
              <DialogContent>
