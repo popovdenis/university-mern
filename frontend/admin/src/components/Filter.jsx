@@ -43,11 +43,21 @@ const Filters = ({ entityType, onApplyFilters }) => {
 
    // Обработка изменения чекбоксов
    const handleAttributeToggle = (attributeCode) => {
-      setSelectedAttributes((prevSelected) =>
-          prevSelected.includes(attributeCode)
-              ? prevSelected.filter((code) => code !== attributeCode)
-              : [...prevSelected, attributeCode]
-      );
+      setSelectedAttributes((prevSelected) => {
+         const updatedSelected = prevSelected.includes(attributeCode)
+             ? prevSelected.filter((code) => code !== attributeCode)
+             : [...prevSelected, attributeCode];
+
+         // Удаляем значение из filterValues, если фильтр снят
+         if (!updatedSelected.includes(attributeCode)) {
+            setFilterValues((prevValues) => {
+               const { [attributeCode]: _, ...rest } = prevValues; // Удаление атрибута
+               return rest;
+            });
+         }
+
+         return updatedSelected;
+      });
    };
 
    // Обработка изменения значений фильтров
