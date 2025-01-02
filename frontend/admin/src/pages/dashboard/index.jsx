@@ -13,7 +13,6 @@ import Header from "../../components/Header";
 import ProgressCircle from "../../components/ProgressCircle";
 import StatBox from "../../components/StatBox";
 import LineChart from "../../components/LineChart";
-import BarChart from "../../components/BarChart";
 import SubscribersPerCourseBarChart from "../../components/charts/SubscribersPerCourseBarChart";
 import { tokens } from "../../theme";
 
@@ -244,23 +243,6 @@ function Dashboard() {
                       $48,352 revenue generated
                    </Typography>
                    <Typography>Includes extra misc expenditures and costs</Typography>
-                </Box>
-             </Box>
-
-             <Box
-                 gridColumn="span 4"
-                 gridRow="span 2"
-                 backgroundColor={colors.primary[400]}
-             >
-                <Typography
-                    variant="h5"
-                    fontWeight="600"
-                    sx={{padding: "30px 30px 0 30px"}}
-                >
-                   Sales Quantity
-                </Typography>
-                <Box height="250px" mt="-20px">
-                   <BarChart isDashboard={true}/>
                 </Box>
              </Box>
 

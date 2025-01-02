@@ -28,7 +28,6 @@ import CreateAttribute from "./pages/attributes/CreateAttribute";
 
 import Invoices from "./scenes/Invoices";
 import Contact from "./scenes/Constact";
-import Bar from "./scenes/Bar";
 import Form from "./scenes/Form";
 import Line from "./scenes/Line";
 import Pie from "./scenes/Pie";
@@ -73,7 +72,6 @@ const [theme, colorMode] = useMode();
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/faq" element={<Faq />} />
-                <Route path="/bar" element={<Bar />} />
                 <Route path="/form" element={<Form />} />
                 <Route path="/line" element={<Line />} />
                 <Route path="/pie" element={<Pie />} />
