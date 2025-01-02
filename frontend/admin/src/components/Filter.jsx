@@ -20,7 +20,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
    const [attributes, setAttributes] = useState([]);
    const [selectedAttributes, setSelectedAttributes] = useState([]);
    const [filterValues, setFilterValues] = useState({});
-   const [isDirty, setIsDirty] = useState(false);
+   const [isResetEnabled, setIsResetEnabled] = useState(false);
 
    // Подгрузка атрибутов
    useEffect(() => {
@@ -48,7 +48,6 @@ const Filters = ({ entityType, onApplyFilters }) => {
               ? prevSelected.filter((code) => code !== attributeCode)
               : [...prevSelected, attributeCode]
       );
-      setIsDirty(true); // Отмечаем изменения
    };
 
    // Обработка изменения значений фильтров
@@ -57,23 +56,24 @@ const Filters = ({ entityType, onApplyFilters }) => {
          ...prevValues,
          [attributeCode]: value,
       }));
-      setIsDirty(true); // Отмечаем изменения
+      setIsResetEnabled(true);
    };
 
    // Очистка всех фильтров
    const handleReset = () => {
-      const resetFilters = {};
+      const resetValues = {};
       selectedAttributes.forEach((attr) => {
-         resetFilters[attr] = ""; // Сбрасываем значения фильтров до дефолтных
+         resetValues[attr] = "";
       });
-      setFilterValues(resetFilters); // Оставляем сами фильтры
-      setIsDirty(false); // Сбрасываем флаг изменений
+      setFilterValues(resetValues);
+      setIsResetEnabled(false);
    };
 
    // Применение фильтров
    const handleApply = () => {
       onApplyFilters(filterValues);
-      setIsDirty(false); // Сбрасываем флаг изменений после применения
+      setIsResetEnabled(true);
+      handleClose();
    };
 
    return (
@@ -88,9 +88,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
                           <Select
                               className="filter-select"
                               value={filterValues[attr] || ""}
-                              onChange={(e) =>
-                                  handleFilterChange(attr, e.target.value)
-                              }
+                              onChange={(e) => handleFilterChange(attr, e.target.value)}
                               displayEmpty
                           >
                              <MenuItem value="">
@@ -117,20 +115,18 @@ const Filters = ({ entityType, onApplyFilters }) => {
 
           {/* Кнопки Apply и Reset */}
           {selectedAttributes.length > 0 && (
-              <Box mt={2} display="flex" justifyContent="flex-end" gap="1rem">
+              <Box display="flex" justifyContent="flex-end" mt={1}>
                  <Button
                      className="filter-reset-button"
-                     variant="outlined"
                      onClick={handleReset}
-                     disabled={!isDirty}
+                     disabled={!isResetEnabled}
                  >
                     Reset
                  </Button>
                  <Button
                      className="filter-apply-button"
-                     variant="contained"
                      onClick={handleApply}
-                     disabled={!isDirty}
+                     disabled={selectedAttributes.length === 0}
                  >
                     Apply
                  </Button>
@@ -148,9 +144,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
                            <Checkbox
                                className="filter-checkbox"
                                checked={selectedAttributes.includes(attribute.attributeCode)}
-                               onChange={() =>
-                                   handleAttributeToggle(attribute.attributeCode)
-                               }
+                               onChange={() => handleAttributeToggle(attribute.attributeCode)}
                            />
                         }
                         label={attribute.label}
@@ -167,10 +161,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
                 </Button>
                 <Button
                     className="filter-apply-button"
-                    onClick={() => {
-                       handleApply();
-                       handleClose();
-                    }}
+                    onClick={handleApply}
                     disabled={selectedAttributes.length === 0}
                 >
                    Apply
