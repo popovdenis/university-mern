@@ -1,17 +1,19 @@
 import React from "react";
-import Header from "../../components/Header";
 import {Box, Button, IconButton, Typography, useTheme} from "@mui/material";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
-import {mockTransactions} from "../../data/mockData";
+import {
+   DownloadOutlined,
+   Email,
+   PointOfSale,
+   PersonAdd,
+   Traffic
+} from "@mui/icons-material";
+import { mockTransactions } from "../../data/mockData";
+import Header from "../../components/Header";
 import ProgressCircle from "../../components/ProgressCircle";
 import StatBox from "../../components/StatBox";
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
-import {tokens} from "../../theme";
+import { tokens } from "../../theme";
 
 function Dashboard() {
    const theme = useTheme();
@@ -24,14 +26,14 @@ function Dashboard() {
              <Box>
                 <Button
                     sx={{
-                       backgroundColor: colors.blueAccent[700],
+                       backgroundColor: colors.blueAccent[400],
                        color: colors.grey[100],
                        fontSize: "1rem",
                        fontWeight: "bold",
                        padding: "0.1remem 0.2rem",
                     }}
                 >
-                   <DownloadOutlinedIcon sx={{mr: "0.2rem"}}/>
+                   <DownloadOutlined sx={{mr: "0.2rem"}}/>
                    Download Reports
                 </Button>
              </Box>
@@ -58,7 +60,7 @@ function Dashboard() {
                     progress="0.75"
                     increase="+14%"
                     icon={
-                       <EmailIcon
+                       <Email
                            sx={{color: colors.greenAccent[600], fontSize: "26px"}}
                        />
                     }
@@ -78,7 +80,7 @@ function Dashboard() {
                     progress="0.50"
                     increase="+21%"
                     icon={
-                       <PointOfSaleIcon sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
+                       <PointOfSale sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
                     }
                 />
              </Box>
@@ -96,7 +98,7 @@ function Dashboard() {
                     progress="0.30"
                     increase="+5%"
                     icon={
-                       <PersonAddIcon sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
+                       <PersonAdd sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
                     }
                 />
              </Box>
@@ -114,7 +116,7 @@ function Dashboard() {
                     progress="0.80"
                     increase="+43%"
                     icon={
-                       <TrafficIcon sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
+                       <Traffic sx={{color: colors.greenAccent[600], fontSize: "26px"}} />
                     }
                 />
              </Box>
@@ -151,7 +153,7 @@ function Dashboard() {
                    </Box>
                    <Box>
                       <IconButton>
-                         <DownloadOutlinedIcon sx={{fontSize: "26px", color: colors.greenAccent[500]}} />
+                         <DownloadOutlined sx={{fontSize: "26px", color: colors.greenAccent[500]}} />
                       </IconButton>
                    </Box>
                 </Box>
