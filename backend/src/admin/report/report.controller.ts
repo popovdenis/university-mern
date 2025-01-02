@@ -16,4 +16,15 @@ export class ReportController {
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
+
+    @Get('course-statuses')
+    async getCourseStatuses(@Res() res: Response): Promise<any> {
+        try {
+            const enrollments = await this.enrollmentService.findCourseStatuses();
+            return res.json(enrollments);
+        } catch (error) {
+            console.error('Error fetching course enrollments:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 }

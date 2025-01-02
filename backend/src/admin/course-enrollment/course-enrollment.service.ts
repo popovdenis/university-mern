@@ -38,4 +38,25 @@ export class CourseEnrollmentService {
             }
         ]);
     }
+
+    async findCourseStatuses(): Promise<CourseEnrollment[]> {
+        return this.enrollmentModel.aggregate([
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    status: '$_id',
+                    count: 1,
+                }
+            },
+            {
+                $sort: { count: -1 }
+            }
+        ]);
+    }
 }

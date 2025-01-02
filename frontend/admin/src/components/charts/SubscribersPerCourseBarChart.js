@@ -20,14 +20,12 @@ const SubscribersPerCourseBarChart = () => {
             "middle": "hsl(100, 70%, 50%)",
             "proficient": "hsl(300, 70%, 50%)",
          };
-         const groupedData = response.data.map((entity) => ({
-            level: entity.level.charAt(0).toUpperCase() + entity.level.slice(1),
-            subscribers: entity.subscribers,
-            color: colorsSchema[entity.level]
-         }));
          setEnrollments(
-             groupedData
-         );
+             response.data.map((entity) => ({
+                level: entity.level.charAt(0).toUpperCase() + entity.level.slice(1),
+                subscribers: entity.subscribers,
+                color: colorsSchema[entity.level]
+         })));
       } catch (error) {
          console.log("Error while fetching courses:", error);
       }
