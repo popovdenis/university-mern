@@ -12,7 +12,7 @@ const CourseStatusPieChart = () => {
 
    const fetchCourses = useCallback(async () => {
       try {
-         const response = await axios.get("http://localhost:5001/reports/course-statuses");
+         const response = await axios.get("http://localhost:5001/reports/course-status");
 
          const colorsSchema = {
             "started": "#F1E15BFF",

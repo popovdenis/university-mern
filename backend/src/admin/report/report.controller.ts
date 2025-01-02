@@ -17,10 +17,21 @@ export class ReportController {
         }
     }
 
-    @Get('course-statuses')
-    async getCourseStatuses(@Res() res: Response): Promise<any> {
+    @Get('course-status')
+    async getCourseStatus(@Res() res: Response): Promise<any> {
         try {
             const enrollments = await this.enrollmentService.findCourseStatuses();
+            return res.json(enrollments);
+        } catch (error) {
+            console.error('Error fetching course enrollments:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    @Get('course-duration')
+    async getCourseDuration(@Res() res: Response): Promise<any> {
+        try {
+            const enrollments = await this.enrollmentService.findCourseDurations();
             return res.json(enrollments);
         } catch (error) {
             console.error('Error fetching course enrollments:', error.message);

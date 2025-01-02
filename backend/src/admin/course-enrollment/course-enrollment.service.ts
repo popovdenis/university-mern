@@ -59,4 +59,40 @@ export class CourseEnrollmentService {
             }
         ]);
     }
+
+    async findCourseDurations(): Promise<CourseEnrollment[]> {
+        return this.enrollmentModel.aggregate([
+            {
+                $lookup: {
+                    from: 'courses',
+                    localField: 'course',
+                    foreignField: '_id',
+                    as: 'courseDetails',
+                },
+            },
+            {
+                $unwind: '$courseDetails'
+            },
+            {
+                $group: {
+                    _id: {
+                        level: '$courseDetails.level',
+                        duration: '$courseDetails.duration',
+                    },
+                    subscribers: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    level: '$_id.level',
+                    duration: '$_id.duration',
+                    subscribers: 1,
+                }
+            },
+            {
+                $sort: { subscribers: -1 }
+            }
+        ]);
+    }
 }
