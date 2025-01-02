@@ -156,32 +156,6 @@ const Sidebar = () => {
                       />
                    </SubMenu>
 
-                   {/* Graphs */}
-                   <SidebarItem
-                       title="Bar Chart"
-                       to="/bar"
-                       icon={<BarChartOutlined />}
-                       selected={selected}
-                       setSelected={setSelected}
-                       isCollapsed={isCollapsed}
-                   />
-                   <SidebarItem
-                       title="Pie Chart"
-                       to="/pie"
-                       icon={<PieChartOutlineOutlined />}
-                       selected={selected}
-                       setSelected={setSelected}
-                       isCollapsed={isCollapsed}
-                   />
-                   <SidebarItem
-                       title="Line Chart"
-                       to="/line"
-                       icon={<TimelineOutlined />}
-                       selected={selected}
-                       setSelected={setSelected}
-                       isCollapsed={isCollapsed}
-                   />
-
                    {/* System */}
                    <SubMenu
                        label={!isCollapsed && "System"}
