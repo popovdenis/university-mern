@@ -3,9 +3,10 @@ import { Box, useTheme, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+import axios from "axios";
 import Header from "../../components/Header";
 import ConfirmationDialog from "../../components/ConfirmationDeleteDialog";
-import axios from "axios";
+import Filter from '../../components/Filter';
 
 function Courses() {
     const theme = useTheme();
@@ -24,6 +25,10 @@ function Courses() {
     const [sortModel, setSortModel] = useState([
         { field: "id", sort: "asc" },
     ]);
+    const [entityType] = useState('course');
+    const handleFilterClick = () => {
+        console.log('Filters button clicked');
+    };
 
     const handleDeleteClick = (entity) => {
         setSelectedEntity(entity);
@@ -168,6 +173,9 @@ function Courses() {
                 >
                     Add New Course
                 </Button>
+            </Box>
+            <Box m="1rem">
+                <Filter entityType={entityType} onFilterClick={handleFilterClick} />
             </Box>
             <Box
                 margin="0.5rem 1rem"
