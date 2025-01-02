@@ -26,8 +26,11 @@ function Courses() {
         { field: "id", sort: "asc" },
     ]);
     const [entityType] = useState('course');
-    const handleFilterClick = () => {
-        console.log('Filters button clicked');
+    const [selectedFilters, setSelectedFilters] = useState([]);
+
+    const handleFilterApply = (filters) => {
+        console.log('Selected filters:', filters);
+        setSelectedFilters(filters);
     };
 
     const handleDeleteClick = (entity) => {
@@ -175,7 +178,7 @@ function Courses() {
                 </Button>
             </Box>
             <Box m="1rem">
-                <Filter entityType={entityType} onFilterClick={handleFilterClick} />
+                <Filter entityType={entityType} onFilterApply={handleFilterApply} />
             </Box>
             <Box
                 margin="0.5rem 1rem"
