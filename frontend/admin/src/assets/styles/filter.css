@@ -80,7 +80,7 @@
 }
 
 .dialog-actions .filter-cancel-button {
-    background-color: #f44336;
+    background-color: #90c7aa;
     color: white;
     font-weight: bold;
     padding: 6px 12px;
@@ -90,11 +90,11 @@
 }
 
 .dialog-actions .filter-cancel-button:hover {
-    background-color: #d32f2f;
+    background-color: #388e3c !important;
 }
 
 .dialog-actions .filter-apply-button {
-    background-color: #1976d2;
+    background-color: #f44336 !important;
     color: white;
     font-weight: bold;
     padding: 6px 12px;
@@ -104,13 +104,12 @@
 }
 
 .dialog-actions .filter-apply-button:disabled {
-    background-color: #cfd8dc;
-    color: #90a4ae;
+    background-color: #e0afaf !important;
     cursor: not-allowed;
 }
 
 .dialog-actions .filter-apply-button:hover {
-    background-color: #388e3c;
+    background-color: #d32f2f !important;
 }
 
 .filter-applied-area {
@@ -145,5 +144,5 @@
 }
 
 .filter-apply-button:hover {
-    background-color: #7eaf97 !important;
+    background-color: #72a170 !important;
 }

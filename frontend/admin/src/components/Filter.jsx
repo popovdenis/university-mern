@@ -20,7 +20,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
    const [attributes, setAttributes] = useState([]);
    const [selectedAttributes, setSelectedAttributes] = useState([]);
    const [filterValues, setFilterValues] = useState({});
-   const [isResetEnabled, setIsResetEnabled] = useState(false);
+   const [isClearAllEnabled, setIsClearAllEnabled] = useState(false);
 
    useEffect(() => {
       const fetchAttributes = async () => {
@@ -68,17 +68,17 @@ const Filters = ({ entityType, onApplyFilters }) => {
 
       // If at least one filter has a value, then activate Reset
       const hasFilters = Object.values(updatedFilterValues).some((val) => val);
-      setIsResetEnabled(hasFilters);
+      setIsClearAllEnabled(hasFilters);
    };
 
    // Clear filters
-   const handleReset = () => {
+   const clearAllFilters = () => {
       const resetValues = {};
       selectedAttributes.forEach((attr) => {
          resetValues[attr] = "";
       });
       setFilterValues(resetValues);
-      setIsResetEnabled(false);
+      setIsClearAllEnabled(false);
    };
 
    // Apply filters in the block
@@ -92,7 +92,8 @@ const Filters = ({ entityType, onApplyFilters }) => {
    };
 
    // Close the popup
-   const handlePopupApply = () => {
+   const handleResetOnPopup = () => {
+      setSelectedAttributes([]);
       handleClose();
    };
 
@@ -134,13 +135,13 @@ const Filters = ({ entityType, onApplyFilters }) => {
           </Box>
 
           {selectedAttributes.length > 0 && (
-              <Box display="flex" justifyContent="flex-end" mt={1}>
+              <Box display="flex" justifyContent="flex-end" mt={1} gap={2}>
                  <Button
                      className="filter-reset-button"
-                     onClick={handleReset}
-                     disabled={!isResetEnabled}
+                     onClick={clearAllFilters}
+                     disabled={!isClearAllEnabled}
                  >
-                    Reset
+                    Clear All
                  </Button>
                  <Button
                      className="filter-apply-button"
@@ -148,7 +149,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
                      disabled={selectedAttributes.length === 0 ||
                               Object.values(filterValues).every((value) => value === "")}
                  >
-                    Apply
+                    Apply Filters
                  </Button>
               </Box>
           )}
@@ -173,17 +174,18 @@ const Filters = ({ entityType, onApplyFilters }) => {
              </DialogContent>
              <DialogActions className="dialog-actions">
                 <Button
+                    className="filter-apply-button"
+                    onClick={handleResetOnPopup}
+                    disabled={selectedAttributes.length === 0}
+                >
+                   Reset
+                </Button>
+                <Box flexGrow={1} />
+                <Button
                     className="filter-cancel-button"
                     onClick={handleClose}
                 >
-                   Cancel
-                </Button>
-                <Button
-                    className="filter-apply-button"
-                    onClick={handlePopupApply}
-                    disabled={selectedAttributes.length === 0}
-                >
-                   Apply
+                   Close
                 </Button>
              </DialogActions>
           </Dialog>
