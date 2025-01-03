@@ -44,7 +44,7 @@ const SidebarItem = ({ title, to, icon, selected, setSelected, isCollapsed }) =>
 const Sidebar = () => {
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-   const [isCollapsed, setCollapsed] = useState(false);
+   const [isCollapsed, setCollapsed] = useState(true);
    const [selected, setSelected] = useState("Dashboard");
 
    return (
@@ -117,7 +117,6 @@ const Sidebar = () => {
                           icon={<ListAlt />}
                           selected={selected}
                           setSelected={setSelected}
-                          isCollapsed={isCollapsed}
                       />
                       <SidebarItem
                           title="Categories"
@@ -125,7 +124,6 @@ const Sidebar = () => {
                           icon={<Category />}
                           selected={selected}
                           setSelected={setSelected}
-                          isCollapsed={isCollapsed}
                       />
                    </SubMenu>
 
@@ -142,7 +140,6 @@ const Sidebar = () => {
                           icon={<PeopleOutlined />}
                           selected={selected}
                           setSelected={setSelected}
-                          isCollapsed={isCollapsed}
                       />
                       <SidebarItem
                           title="New Customer"
@@ -150,7 +147,6 @@ const Sidebar = () => {
                           icon={<PersonAddAlt />}
                           selected={selected}
                           setSelected={setSelected}
-                          isCollapsed={isCollapsed}
                       />
                    </SubMenu>
 
@@ -169,7 +165,6 @@ const Sidebar = () => {
                           icon={<AdminPanelSettingsOutlined />}
                           selected={selected}
                           setSelected={setSelected}
-                          isCollapsed={isCollapsed}
                       />
                       <SidebarItem
                           title="Attributes"
@@ -177,7 +172,6 @@ const Sidebar = () => {
                           icon={<Extension />}
                           selected={selected}
                           setSelected={setSelected}
-                          isCollapsed={isCollapsed}
                       />
                    </SubMenu>
                 </Box>
