@@ -32,6 +32,10 @@ function Courses() {
         setSelectedFilters(filters);
         setPaginationModel((prev) => ({ ...prev, page: 0 }));
     };
+    const handleFilterReset = () => {
+        setSelectedFilters({});
+        setPaginationModel((prev) => ({ ...prev, page: 0 }));
+    };
 
     const handleDeleteClick = (entity) => {
         setSelectedEntity(entity);
@@ -179,7 +183,7 @@ function Courses() {
                 </Button>
             </Box>
             <Box m="1rem">
-                <Filter entityType={entityType} onApplyFilters={handleFilterApply} />
+                <Filter entityType={entityType} onApplyFilters={handleFilterApply} onResetFilters={handleFilterReset} />
             </Box>
             <Box
                 margin="0.5rem 1rem"

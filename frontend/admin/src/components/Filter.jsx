@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import "../assets/styles/filter.css";
 
-const Filters = ({ entityType, onApplyFilters }) => {
+const Filters = ({ entityType, onApplyFilters, onResetFilters }) => {
    const [isOpen, setIsOpen] = useState(false);
    const [attributes, setAttributes] = useState([]);
    const [selectedAttributes, setSelectedAttributes] = useState([]);
@@ -81,6 +81,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
       });
       setFilterValues(resetValues);
       setIsClearAllEnabled(false);
+      onResetFilters();
    };
 
    // Apply filters in the block
