@@ -54,7 +54,7 @@ function Courses() {
         }
     };
 
-    const fetchCourses = useCallback (async (page, pageSize) => {
+    const fetchGridData = useCallback (async (page, pageSize) => {
         setLoading(true);
         try {
             const response = await axios.get("http://localhost:5001/courses", {
@@ -62,7 +62,8 @@ function Courses() {
                     _page: page + 1,
                     _limit: pageSize,
                     _sort: sortModel[0]?.field,
-                    _order: sortModel[0].sort
+                    _order: sortModel[0].sort,
+                    ...selectedFilters
                 },
             });
             setCourses(response.data);
@@ -72,11 +73,11 @@ function Courses() {
         } finally {
             setLoading(false);
         }
-    }, [sortModel]);
+    }, [sortModel, selectedFilters]);
 
     useEffect(() => {
-        fetchCourses(paginationModel.page, paginationModel.pageSize);
-    }, [paginationModel, sortModel]);
+        fetchGridData(paginationModel.page, paginationModel.pageSize)
+    }, [paginationModel, sortModel, selectedFilters]);
 
     const columns = [
         {
