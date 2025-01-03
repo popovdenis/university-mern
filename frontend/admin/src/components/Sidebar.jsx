@@ -5,8 +5,6 @@ import { tokens } from "../theme";
 import {
    PeopleTwoTone,
    PeopleOutlined,
-   BarChartOutlined,
-   PieChartOutlineOutlined,
    TimelineOutlined,
    MenuOutlined,
    AdminPanelSettings,
@@ -46,7 +44,7 @@ const SidebarItem = ({ title, to, icon, selected, setSelected, isCollapsed }) =>
 const Sidebar = () => {
    const theme = useTheme();
    const colors = tokens(theme.palette.mode);
-   const [isCollapsed, setCollapsed] = useState(false);
+   const [isCollapsed, setCollapsed] = useState(true);
    const [selected, setSelected] = useState("Dashboard");
 
    return (
