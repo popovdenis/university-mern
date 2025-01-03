@@ -22,8 +22,17 @@ export class AdminAuthService {
         return bcrypt.compare(password, hashedPassword);
     }
 
-    generateJwt(payload: any): string {
+    generateJwt(admin: AdminUser): string {
+        const payload = { sub: admin._id, email: admin.email, role: 'admin' };
         return this.jwtService.sign(payload);
+    }
+
+    async validateAdmin(email: string, password: string): Promise<AdminUser | null> {
+        const admin = await this.adminModel.findOne({ email }).exec();
+        if (admin && (await bcrypt.compare(password, admin.password))) {
+            return admin;
+        }
+        return null;
     }
 
     async register(registerDto: AdminDto): Promise<AdminUser> {
