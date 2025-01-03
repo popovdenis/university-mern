@@ -12,7 +12,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 export default function Topbar() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const colorMode = useContext(ColorModeContext);
+  // const colorMode = useContext(ColorModeContext);
 
   return (
     <Box display="flex" justifyContent="space-between" pt={2} pr={3}>
@@ -27,19 +27,19 @@ export default function Topbar() {
         {/*</IconButton>*/}
       </Box>
       <Box display="flex">
-        <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? (
-            <LightModeOutlined />
-          ) : (
-            <DarkModeOutlined />
-          )}
-        </IconButton>
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
+        {/*<IconButton onClick={colorMode.toggleColorMode}>*/}
+        {/*  {theme.palette.mode === "dark" ? (*/}
+        {/*    <LightModeOutlined />*/}
+        {/*  ) : (*/}
+        {/*    <DarkModeOutlined />*/}
+        {/*  )}*/}
+        {/*</IconButton>*/}
+        {/*<IconButton>*/}
+        {/*  <NotificationsOutlinedIcon />*/}
+        {/*</IconButton>*/}
+        {/*<IconButton>*/}
+        {/*  <SettingsOutlinedIcon />*/}
+        {/*</IconButton>*/}
         <IconButton>
           <PersonOutlinedIcon />
         </IconButton>
