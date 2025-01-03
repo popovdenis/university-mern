@@ -7,10 +7,15 @@ import {AdminAuthStrategy} from './admin-auth.strategy';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import {MongooseModule} from "@nestjs/mongoose";
 import {AdminUser} from "../admin/admin-user/admin-users.schema";
+import { AdminActionLog, AdminActionLogSchema } from "./admin-action-log.schema";
+import {AdminActionLogService} from "./admin-action-log.service";
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: AdminUser.name, schema: AdminUser }]),
+        MongooseModule.forFeature([
+            { name: AdminActionLog.name, schema: AdminActionLogSchema },
+            { name: AdminUser.name, schema: AdminUser },
+        ]),
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
@@ -22,8 +27,8 @@ import {AdminUser} from "../admin/admin-user/admin-users.schema";
         }),
     ],
     controllers: [AdminAuthController],
-    providers: [AdminAuthService, AdminAuthStrategy],
-    exports: [AdminAuthService],
+    providers: [AdminAuthService, AdminAuthStrategy, AdminActionLogService],
+    exports: [AdminAuthService, AdminActionLogService],
 })
-export class AdminAuthModule {
-}
+
+export class AdminAuthModule {}
