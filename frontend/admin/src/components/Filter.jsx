@@ -21,21 +21,23 @@ const Filters = ({ entityType, onApplyFilters }) => {
    const [selectedAttributes, setSelectedAttributes] = useState([]);
    const [filterValues, setFilterValues] = useState({});
    const [isClearAllEnabled, setIsClearAllEnabled] = useState(false);
+   const [isAttributesLoaded, setIsAttributesLoaded] = useState(false);
 
-   useEffect(() => {
-      const fetchAttributes = async () => {
+   const handleOpen = async () => {
+      setIsOpen(true);
+
+      if (!isAttributesLoaded) {
          try {
             const response = await axios.get(`http://localhost:5001/attributes?entityType=${entityType}`);
             setAttributes(response.data);
+            setIsAttributesLoaded(true);
          } catch (error) {
             console.error("Error fetching attributes:", error);
          }
-      };
-      fetchAttributes();
-   }, [entityType]);
+      }
+   };
 
    // Open and close the popup
-   const handleOpen = () => setIsOpen(true);
    const handleClose = () => setIsOpen(false);
 
    // Handle the checkboxes
