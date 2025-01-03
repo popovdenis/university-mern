@@ -29,8 +29,8 @@ function Courses() {
     const [selectedFilters, setSelectedFilters] = useState([]);
 
     const handleFilterApply = (filters) => {
-        console.log('Selected filters:', filters);
         setSelectedFilters(filters);
+        setPaginationModel((prev) => ({ ...prev, page: 0 }));
     };
 
     const handleDeleteClick = (entity) => {
