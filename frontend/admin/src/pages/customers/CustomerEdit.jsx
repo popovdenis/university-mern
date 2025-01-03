@@ -6,9 +6,6 @@ import SidebarTab from "../../components/SidebarTab";
 import TabContent from "./tabs/TabContent";
 
 const CustomerEdit = () => {
-   const theme = useTheme();
-   const colors = tokens(theme.palette.mode);
-
    const [activeTab, setActiveTab] = useState("account");
    const [tabData] = useState({});
    const [loading] = useState(false);
