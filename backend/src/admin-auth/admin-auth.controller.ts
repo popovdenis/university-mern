@@ -1,18 +1,24 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import {Body, Controller, Get, Post} from '@nestjs/common';
 import { AdminAuthService } from './admin-auth.service';
+import {AdminDto} from "../admin/admin-user/admin.dto";
 
 @Controller('admin-auth')
 export class AdminAuthController {
-    constructor(private readonly adminAuthService: AdminAuthService) {}
+    constructor(private adminAuthService: AdminAuthService) {}
 
     @Post('login')
-    async login(@Body() loginDto: { email: string; password: string }) {
-        const token = await this.adminAuthService.validateAdmin(loginDto.email, loginDto.password);
+    async login() {
+        return { message: 'Hello World from /admin-auth/login' };
+    }
 
-        if (!token) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
+    @Post('register')
+    async register(@Body() registerDto: AdminDto) {
+        const admin = await this.adminAuthService.register(registerDto);
+        return { message: 'Admin has been registered successfully', admin };
+    }
 
-        return { token };
+    @Get()
+    async index() {
+        return { message: 'Hello World from /admin-auth' };
     }
 }

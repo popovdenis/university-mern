@@ -1,25 +1,40 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { AdminUser } from '../admin/admin-user/admin-users.schema';
 import * as bcrypt from 'bcrypt';
+import {InjectModel} from "@nestjs/mongoose";
+import {Model} from "mongoose";
+import {AdminUser} from "../admin/admin-user/admin-users.schema";
+import {AdminDto} from "../admin/admin-user/admin.dto";
 
 @Injectable()
 export class AdminAuthService {
     constructor(
-        @InjectModel(AdminUser.name) private readonly adminUserModel: Model<AdminUser>,
-        private readonly jwtService: JwtService,
+        @InjectModel(AdminUser.name) private adminModel: Model<AdminUser>,
+        private readonly jwtService: JwtService
     ) {}
 
-    async validateAdmin(email: string, password: string): Promise<string | null> {
-        const admin = await this.adminUserModel.findOne({ email });
+    async hashPassword(password: string): Promise<string> {
+        const salt = await bcrypt.genSalt();
+        return bcrypt.hash(password, salt);
+    }
 
-        if (!admin || !(await bcrypt.compare(password, admin.password))) {
-            return null; // Возвращаем null при ошибке авторизации
-        }
+    async validatePassword(password: string, hashedPassword: string): Promise<boolean> {
+        return bcrypt.compare(password, hashedPassword);
+    }
 
-        // Генерация JWT-токена
-        return this.jwtService.sign({ id: admin._id, email: admin.email });
+    generateJwt(payload: any): string {
+        return this.jwtService.sign(payload);
+    }
+
+    async register(registerDto: AdminDto): Promise<AdminUser> {
+        const { firstname, lastname, email, password } = registerDto;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = new this.adminModel({
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword
+        });
+        return newAdmin.save();
     }
 }
