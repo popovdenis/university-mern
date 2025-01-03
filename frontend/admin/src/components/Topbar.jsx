@@ -21,10 +21,10 @@ export default function Topbar() {
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase type="text" placeholder="Search.." sx={{ ml: 2, flex: 1 }} />
-        <IconButton sx={{ p: 1 }} type="button">
-          <SearchIcon />
-        </IconButton>
+        {/*<InputBase type="text" placeholder="Search.." sx={{ ml: 2, flex: 1 }} />*/}
+        {/*<IconButton sx={{ p: 1 }} type="button">*/}
+        {/*  <SearchIcon />*/}
+        {/*</IconButton>*/}
       </Box>
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>

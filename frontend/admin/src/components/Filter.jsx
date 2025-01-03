@@ -185,7 +185,7 @@ const Filters = ({ entityType, onApplyFilters }) => {
                     className="filter-cancel-button"
                     onClick={handleClose}
                 >
-                   Close
+                   Apply
                 </Button>
              </DialogActions>
           </Dialog>
