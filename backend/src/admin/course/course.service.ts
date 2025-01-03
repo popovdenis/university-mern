@@ -19,7 +19,13 @@ export class CourseService {
             .exec();
     }
 
-    async findAll(skip: number, limit: number, sortField?: string, sortOrder?: 'asc' | 'desc'): Promise<Course[]> {
+    async findAll(
+        query: Record<string, any> = {},
+        skip: number,
+        limit: number,
+        sortField?: string,
+        sortOrder?: 'asc' | 'desc'
+    ): Promise<Course[]> {
         const sort = {};
         if (sortField) {
             sortField = sortField === 'id' ? '_id' : sortField;
@@ -27,15 +33,15 @@ export class CourseService {
         }
 
         return this.courseModel
-            .find()
+            .find(query)
             .sort(sort)
             .skip(skip)
             .limit(limit)
             .exec();
     }
 
-    async count(): Promise<number> {
-        return this.courseModel.countDocuments().exec();
+    async count(query: Record<string, any>): Promise<number> {
+        return this.courseModel.countDocuments(query).exec();
     }
 
     async findById(id: string): Promise<Course> {

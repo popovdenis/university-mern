@@ -78,15 +78,23 @@ export class CourseController {
         @Query('_limit') limit: string,
         @Query('_sort') sortField?: string,
         @Query('_order') sortOrder?: 'asc' | 'desc',
+        @Query() filters?: Record<string, string>,
     ): Promise<any> {
         try {
             const pageNumber = parseInt(page, 10) || 1;
             const limitNumber = parseInt(limit, 10) || 10;
             const skip = (pageNumber - 1) * limitNumber;
 
-            const totalCourses = await this.courseService.count();
+            const query = Object.entries(filters || {}).reduce((acc, [key, value]) => {
+                if (key !== '_page' && key !== '_limit' && key !== '_sort' && key !== '_order') {
+                    acc[key] = { $regex: value, $options: 'i' };
+                }
+                return acc;
+            }, {});
 
-            const courses = await this.courseService.findAll(skip, limitNumber, sortField, sortOrder);
+            const totalCourses = await this.courseService.count(query);
+
+            const courses = await this.courseService.findAll(query, skip, limitNumber, sortField, sortOrder);
 
             const transformedCourses = courses.map((course) => ({
                 ...course.toObject(),
