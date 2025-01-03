@@ -3,7 +3,7 @@ import {useTheme} from "@mui/material/styles";
 import {tokens} from "../../../theme";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Box, Button, FormControlLabel, Switch, TextField} from "@mui/material";
+import {Box, Button, FormControlLabel, Switch, TextField, Typography} from "@mui/material";
 
 const AccountInformation = () => {
    const { id } = useParams();
@@ -90,7 +90,10 @@ const AccountInformation = () => {
    };
 
    return (
-       <Box m="1.5rem">
+       <Box>
+          <Typography variant="h4" color={colors.grey[100]} mb={5} gutterBottom>
+             Edit User
+          </Typography>
           <form onSubmit={handleSubmit}>
              <Box display="grid" gap="1.5rem" gridTemplateColumns="1fr 1fr">
                 <Box>

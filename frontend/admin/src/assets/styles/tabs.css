@@ -2,10 +2,11 @@
 .container {
     display: flex;
     gap: 1rem;
+    margin-left: 30px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: calc( (70%) * 0.25 );
+    width: calc( (60%) * 0.25 );
 }
 
 .tabs-container {

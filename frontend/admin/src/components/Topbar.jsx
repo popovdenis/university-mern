@@ -15,7 +15,7 @@ export default function Topbar() {
   const colorMode = useContext(ColorModeContext);
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
+    <Box display="flex" justifyContent="space-between" pt={2} pr={3}>
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}

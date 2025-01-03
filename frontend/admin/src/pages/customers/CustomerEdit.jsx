@@ -19,10 +19,7 @@ const CustomerEdit = () => {
    ];
 
    return (
-       <Box m="1.5rem">
-          <Typography variant="h4" color={colors.grey[100]} gutterBottom>
-             Edit User
-          </Typography>
+       <Box>
           <Box display="flex">
              <SidebarTab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
              <Box width="80%" p={3}>
