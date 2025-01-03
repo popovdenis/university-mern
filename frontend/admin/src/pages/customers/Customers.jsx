@@ -161,7 +161,7 @@ function Customers() {
             <Box
                 margin="0.5rem 1rem"
                 m="2rem 0 0 0"
-                height={customers.length > 0 ? `${customers.length * 75}px` : '300px'}
+                height={customers.length > 0 ? `${customers.length * 75}px ${64 * 16}px` : '300px'}
                 maxHeight="64vh"
             >
                 <DataGrid

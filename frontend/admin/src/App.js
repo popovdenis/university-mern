@@ -53,7 +53,7 @@ const [theme, colorMode] = useMode();
                 <Route path="/categories/edit/:id" element={<EditCategory />} />
                 <Route path="/categories/create" element={<CreateCategory />} />
 
-                <Route path="/customers" element={<Customers />} />
+                <Route path="/customers/*" element={<Customers />} />
                 <Route path="/customers/edit/:id" element={<CustomerEdit />} />
                 <Route path="/customers/create" element={<CreateCustomer />} />
 

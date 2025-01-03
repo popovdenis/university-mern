@@ -1,10 +1,14 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Res, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { CustomerService } from './customer.service';
+import {CourseEnrollmentService} from "../course-enrollment/course-enrollment.service";
 
 @Controller('customers')
 export class CustomerController {
-    constructor(private readonly customerService: CustomerService) {}
+    constructor(
+        private readonly customerService: CustomerService,
+        private readonly enrollmentService: CourseEnrollmentService,
+    ) {}
 
     @Post()
     async create(
@@ -48,7 +52,6 @@ export class CustomerController {
                 id: customer._id,
             }));
 
-            // Установка заголовков для клиента
             res.setHeader('X-Total-Count', totalCustomers.toString());
             res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
 
@@ -73,6 +76,33 @@ export class CustomerController {
             };
 
             return res.json(transformedUser);
+        } catch (error) {
+            console.error('Error fetching customer:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    @Get(':id/courses')
+    async findCustomerCourses(
+        @Param('id') id: string,
+        @Res() res: Response,
+        @Query('_page') page: string,
+        @Query('_limit') limit: string
+    ): Promise<any> {
+        try {
+            const pageNumber = parseInt(page, 10) || 1;
+            const limitNumber = parseInt(limit, 10) || 10;
+            const skip = (pageNumber - 1) * limitNumber;
+
+            const courses = await this.enrollmentService.findCustomerCourses(id, skip, limitNumber);
+            if (!courses) {
+                return res.status(404).json({ message: 'Customer user not found' });
+            }
+
+            res.setHeader('X-Total-Count', courses.total);
+            res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+
+            return res.json(courses.data);
         } catch (error) {
             console.error('Error fetching customer:', error.message);
             return res.status(500).json({ message: 'Internal server error' });

@@ -48,6 +48,10 @@ export class CourseService {
         return this.courseModel.findById(id).exec();
     }
 
+    async findCoursesWithCategories(): Promise<Course[]> {
+        return this.courseModel.find().populate('categories').exec();
+    }
+
     async update(id: string, updateCourseDto: any): Promise<Course> {
         return this.courseModel.findByIdAndUpdate(id, updateCourseDto, { new: true }).exec();
     }
@@ -76,9 +80,5 @@ export class CourseService {
             )
             .populate('categories')
             .exec();
-    }
-
-    async findCoursesWithCategories(): Promise<Course[]> {
-        return this.courseModel.find().populate('categories').exec();
     }
 }

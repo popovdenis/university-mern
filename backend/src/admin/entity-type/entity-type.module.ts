@@ -8,8 +8,8 @@ import { EntityTypeController } from './entity-type.controller';
   imports: [
     MongooseModule.forFeature([{ name: EntityType.name, schema: EntityTypeSchema }]),
   ],
+  controllers: [EntityTypeController],
   providers: [EntityTypeService],
   exports: [EntityTypeService],
-  controllers: [EntityTypeController],
 })
 export class EntityTypeModule {}

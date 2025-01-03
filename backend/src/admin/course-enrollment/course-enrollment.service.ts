@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
+import { ObjectId } from "mongodb";
 import { CourseEnrollment } from "./course-enrollment.schema";
 
 @Injectable()
@@ -58,5 +59,61 @@ export class CourseEnrollmentService {
                 $sort: { count: -1 }
             }
         ]);
+    }
+
+    async findCustomerCourses(customerId: string, skip: number, limit: number): Promise<{ data: any[], total: number }> {
+        const result = await this.enrollmentModel.aggregate([
+            {
+                $match: {
+                    customer: new ObjectId(customerId)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'courses',
+                    localField: 'course',
+                    foreignField: '_id',
+                    as: 'courseDetails',
+                },
+            },
+            {
+                $unwind: '$courseDetails'
+            },
+            {
+                $project: {
+                    // _id: 0,
+                    id: '$courseDetails._id',
+                    title: '$courseDetails.title',
+                    duration: '$courseDetails.duration',
+                    level: '$courseDetails.level',
+                    isActive: '$courseDetails.isActive',
+                }
+            },
+            {
+                $facet: {
+                    metadata: [
+                        { $count: 'total' },
+                    ],
+                    data: [
+                        { $skip: skip },
+                        { $limit: limit },
+                    ],
+                },
+            },
+            {
+                $unwind: {
+                    path: '$metadata',
+                    preserveNullAndEmptyArrays: true, // prevent error if the list is empty
+                },
+            },
+            {
+                $project: {
+                    total: '$metadata.total',
+                    data: 1,
+                },
+            },
+        ]);
+
+        return (result.length === 0) ? { data: [], total: 0 } : result[0];
     }
 }
